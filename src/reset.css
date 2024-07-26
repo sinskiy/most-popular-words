@@ -31,3 +31,8 @@ ol {
 ::marker {
   font-size: 0;
 }
+
+a {
+  text-decoration: unset;
+  color: unset;
+}
