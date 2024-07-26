@@ -1,0 +1,33 @@
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+}
+body {
+  scroll-behavior: smooth;
+  line-height: 1.5;
+}
+img,
+picture,
+video,
+canvas,
+svg {
+  display: block;
+  max-width: 100%;
+}
+input,
+button,
+textarea,
+select {
+  font: inherit;
+}
+* {
+  margin: 0;
+}
+ul,
+ol {
+  padding: 0;
+}
+::marker {
+  font-size: 0;
+}
