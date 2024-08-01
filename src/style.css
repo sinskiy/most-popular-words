@@ -1,6 +1,8 @@
 :root {
   --background: #12140e;
   --text: #e2e3d8;
+  --primary: #b1d18a;
+  --on-primary: #1f3701;
 }
 
 html {
@@ -37,13 +39,43 @@ body {
 }
 
 nav {
-  display: flex;
-  gap: 1rem;
+  margin-top: 2rem;
 
-  margin-top: 1rem;
-}
-
-.nav {
   font-size: 0.875rem;
   font-weight: 500;
+}
+
+nav ul {
+  display: flex;
+  gap: 1rem;
+}
+
+/* hidden radio input */
+nav li,
+.hidden-radio-container {
+  position: relative;
+}
+nav input,
+.hidden-radio {
+  position: absolute;
+  inset: 0;
+  opacity: 0;
+}
+
+nav label {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+
+  padding: 0.5rem 4rem 0.5rem 3.5rem;
+
+  border-radius: 9999px;
+
+  color: var(--primary);
+}
+nav input:checked + label {
+  background-color: var(--primary);
+  color: var(--on-primary);
+
+  font-weight: 600;
 }
