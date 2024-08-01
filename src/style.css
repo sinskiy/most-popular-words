@@ -1,4 +1,10 @@
 :root {
+  --background: #f9faef;
+  --text: #1a1c16;
+  --primary: #4c662b;
+  --on-primary: #ffffff;
+}
+:root[data-theme="dark"] {
   --background: #12140e;
   --text: #e2e3d8;
   --primary: #b1d18a;
@@ -6,7 +12,7 @@
 }
 
 html {
-  color-scheme: dark;
+  color-scheme: light dark;
 }
 
 body {
@@ -33,6 +39,12 @@ body {
     sans-serif;
 }
 
+header {
+  display: flex;
+  align-items: center;
+  gap: 4rem;
+}
+
 .logo {
   font-size: 1.5rem;
   font-weight: 500;
@@ -52,11 +64,11 @@ nav ul {
 
 /* hidden radio input */
 nav li,
-.hidden-radio-container {
+.hidden-input-container {
   position: relative;
 }
 nav input,
-.hidden-radio {
+.hidden-input {
   position: absolute;
   inset: 0;
   opacity: 0;
