@@ -8,7 +8,7 @@ export default [
   },
   {
     files: ["*.config.js"],
-    languageOptions: { globals: globals.node, sourceType: "commonjs" },
+    languageOptions: { globals: globals.node, sourceType: "module" },
   },
   pluginJs.configs.recommended,
 ];

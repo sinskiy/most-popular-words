@@ -1,5 +1,5 @@
-import "./loadTheme";
+import "./loadTheme.js";
 
 import "./reset.css";
 import "./style.css";
-import "./toggleTheme";
+import "./toggleTheme.js";
