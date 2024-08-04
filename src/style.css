@@ -58,7 +58,7 @@ body {
     sans-serif;
 }
 
-input {
+input[type="text"] {
   border-radius: 1rem;
   border: none;
   outline: 1px solid var(--outline);
@@ -69,7 +69,7 @@ input {
 
   font-size: 1.5rem;
 }
-input:focus {
+input[type="text"]:focus {
   outline: 2px solid var(--primary);
 }
 
@@ -107,13 +107,13 @@ nav li,
 .hidden-input-container {
   position: relative;
 }
-nav input,
+nav li input,
 .hidden-input {
   position: absolute;
   inset: 0;
   opacity: 0;
 }
-nav label {
+nav li label {
   display: flex;
   align-items: center;
   gap: 0.5rem;
@@ -124,11 +124,16 @@ nav label {
 
   color: var(--primary);
 }
-nav input:checked + label {
+nav li input:checked + label {
   background-color: var(--primary);
   color: var(--on-primary);
 
   font-weight: 600;
+}
+nav li input:focus-visible + label,
+.hidden-input:focus-visible + label {
+  outline: 1px solid var(--outline);
+  outline-offset: 3px;
 }
 
 main {
@@ -192,4 +197,21 @@ section {
 .book:nth-of-type(3n) {
   background-color: var(--tertiary--variant);
   color: var(--on-tertiary--variant);
+}
+
+@media (max-width: 1200px) {
+  header {
+    flex-wrap: wrap;
+    gap: 2rem;
+  }
+  header .logo {
+    width: calc(100% - 4rem);
+  }
+  header nav {
+    order: 3;
+    width: 100%;
+  }
+  nav ul {
+    flex-wrap: wrap;
+  }
 }
