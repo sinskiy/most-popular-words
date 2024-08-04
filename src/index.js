@@ -19,6 +19,10 @@ import "./style.css";
 
 import "./toggleTheme.js";
 
-export const main = document.querySelector("main");
+const main = document.querySelector("main");
+export function displayNewSection(section) {
+  main.innerHTML = "";
+  main.appendChild(section);
+}
 
 function displayHome() {}

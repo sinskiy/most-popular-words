@@ -10,6 +10,7 @@
   --on-secondary--variant: #151e0b;
   --tertiary--variant: #bcece7;
   --on-tertiary--variant: #00201e;
+  --outline: #75796c;
 }
 :root[data-theme="dark"] {
   --background: #12140e;
@@ -23,6 +24,7 @@
   --on-secondary--variant: #dce7c8;
   --tertiary--variant: #1f4e4b;
   --on-tertiary--variant: #bcece7;
+  --outline: #8f9285;
 }
 
 html {
@@ -53,30 +55,41 @@ body {
     sans-serif;
 }
 
+input {
+  border-radius: 1rem;
+  border: none;
+  outline: 1px solid var(--outline);
+  padding: 0.5rem 2rem;
+
+  background-color: var(--surface);
+  color: var(--text);
+
+  font-size: 1.5rem;
+}
+input:focus {
+  outline: 2px solid var(--primary);
+}
+
 .top {
   display: flex;
   align-items: center;
   gap: 4rem;
 }
-
 .logo {
   font-size: 1.5rem;
   font-weight: 500;
 }
-
 nav {
   margin-top: 2rem;
 
   font-size: 0.875rem;
   font-weight: 500;
 }
-
 nav ul {
   display: flex;
   justify-content: center;
   gap: 1rem;
 }
-
 /* hidden radio input */
 nav li,
 .hidden-input-container {
@@ -88,7 +101,6 @@ nav input,
   inset: 0;
   opacity: 0;
 }
-
 nav label {
   display: flex;
   align-items: center;
@@ -110,6 +122,11 @@ nav input:checked + label {
 main {
   margin-top: 4rem;
 }
+section {
+  display: flex;
+  flex-direction: column;
+  gap: 2rem;
+}
 
 .books {
   display: flex;
@@ -122,10 +139,9 @@ main {
   --books-per-line: 4;
   max-width: calc(
     var(--book-width) * var(--books-per-line) + var(--books-gap) *
-      var(--books-per-line)
+      (var(--books-per-line) - 1)
   );
 }
-
 .book {
   /* override button */
   align-items: start;
