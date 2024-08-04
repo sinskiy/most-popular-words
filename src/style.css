@@ -36,10 +36,13 @@ body {
   flex-direction: column;
   align-items: center;
 
+  margin: 0 auto;
+  max-width: 70%;
+
   background-color: var(--background);
   color: var(--text);
 
-  padding: 1rem;
+  padding: 2rem 1rem;
 
   font-family:
     system-ui,
@@ -70,18 +73,27 @@ input:focus {
   outline: 2px solid var(--primary);
 }
 
-.top {
+a {
+  transition: opacity 150ms;
+}
+a:hover {
+  opacity: 0.8;
+}
+a:any-link:hover {
+  text-decoration: underline;
+}
+
+header {
+  width: 100%;
   display: flex;
   align-items: center;
-  gap: 4rem;
+  justify-content: space-between;
 }
 .logo {
   font-size: 1.5rem;
   font-weight: 500;
 }
 nav {
-  margin-top: 2rem;
-
   font-size: 0.875rem;
   font-weight: 500;
 }
@@ -136,7 +148,7 @@ section {
 
   margin: auto;
   --book-width: 15rem;
-  --books-per-line: 4;
+  --books-per-line: 5;
   max-width: calc(
     var(--book-width) * var(--books-per-line) + var(--books-gap) *
       (var(--books-per-line) - 1)
