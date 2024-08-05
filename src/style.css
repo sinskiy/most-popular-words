@@ -37,7 +37,7 @@ body {
   align-items: center;
 
   margin: 0 auto;
-  max-width: 70%;
+  max-width: 75%;
 
   background-color: var(--background);
   color: var(--text);
@@ -61,11 +61,11 @@ body {
 input[type="text"] {
   border-radius: 1rem;
   border: none;
-  outline: 1px solid var(--outline);
   padding: 0.5rem 2rem;
 
   background-color: var(--surface);
   color: var(--text);
+  outline: 1px solid var(--outline);
 
   font-size: 1.5rem;
 }
@@ -147,12 +147,13 @@ section {
 
 .books {
   display: flex;
+  justify-content: center;
   --books-gap: 1rem;
   gap: var(--books-gap);
   flex-wrap: wrap;
 
   margin: auto;
-  --book-width: 15rem;
+  --book-width: 16rem;
   --books-per-line: 5;
   max-width: calc(
     var(--book-width) * var(--books-per-line) + var(--books-gap) *
@@ -200,6 +201,10 @@ section {
 }
 
 @media (max-width: 1200px) {
+  body {
+    max-width: 100%;
+  }
+
   header {
     flex-wrap: wrap;
     gap: 2rem;
