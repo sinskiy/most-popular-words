@@ -9,6 +9,10 @@ dist/
 
 # Personal information
 TODO.md
+.env.*
 
 # Temporary
 node-temp/
+
+# Vercel
+.vercel

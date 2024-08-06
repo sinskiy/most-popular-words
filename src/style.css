@@ -11,6 +11,8 @@
   --tertiary--variant: #bcece7;
   --on-tertiary--variant: #00201e;
   --outline: #75796c;
+
+  --rounded: 1rem;
 }
 :root[data-theme="dark"] {
   --background: #12140e;
@@ -138,6 +140,7 @@ nav li input:focus-visible + label,
 
 main {
   margin-top: 4rem;
+  width: 100%;
 }
 section {
   display: flex;
@@ -145,22 +148,29 @@ section {
   gap: 2rem;
 }
 
+:is(.book, .word-container):nth-of-type(3n - 23) {
+  background-color: var(--primary--variant);
+  color: var(--on-primary--variant);
+}
+:is(.book, .word-container):nth-of-type(3n - 1) {
+  background-color: var(--secondary--variant);
+  color: var(--on-secondary--variant);
+}
+:is(.book, .word-container):nth-of-type(3n) {
+  background-color: var(--tertiary--variant);
+  color: var(--on-tertiary--variant);
+}
+
 .books {
   display: flex;
   justify-content: center;
-  --books-gap: 1rem;
-  gap: var(--books-gap);
+  gap: 1rem;
   flex-wrap: wrap;
 
   margin: auto;
-  --book-width: 16rem;
-  --books-per-line: 5;
-  max-width: calc(
-    var(--book-width) * var(--books-per-line) + var(--books-gap) *
-      (var(--books-per-line) - 1)
-  );
 }
 .book {
+  flex-grow: 1;
   /* override button */
   align-items: start;
   text-align: start;
@@ -170,12 +180,13 @@ section {
   flex-direction: column;
   justify-content: end;
 
-  width: var(--book-width);
   height: 24rem;
+  aspect-ratio: 2/3;
+  width: auto;
   padding: 1.5rem;
 
   background-color: var(--surface);
-  border-radius: 1rem;
+  border-radius: var(--rounded);
 
   transition:
     opacity 200ms,
@@ -187,17 +198,25 @@ section {
 .book:active {
   transform: scale(0.95);
 }
-.book:nth-of-type(3n - 23) {
-  background-color: var(--primary--variant);
-  color: var(--on-primary--variant);
+
+.words {
+  gap: 0.5rem;
+  width: 100%;
 }
-.book:nth-of-type(3n - 1) {
-  background-color: var(--secondary--variant);
-  color: var(--on-secondary--variant);
+
+.word-container {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+
+  padding: 1rem 4rem;
+
+  border-radius: var(--rounded);
+  background-color: var(--surface);
 }
-.book:nth-of-type(3n) {
-  background-color: var(--tertiary--variant);
-  color: var(--on-tertiary--variant);
+
+.word {
+  font-size: 3rem;
 }
 
 @media (max-width: 1200px) {
