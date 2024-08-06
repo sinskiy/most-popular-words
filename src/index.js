@@ -1,8 +1,14 @@
 import displayBooks from "./DOMBooks.js";
+import displayHome from "./DOMHome.js";
 import "./loadTheme.js";
+import "./reset.css";
+import "./style.css";
+import "./toggleTheme.js";
 
 const nav = document.querySelector("header nav");
-nav.addEventListener("change", () => {
+nav.addEventListener("change", displaySelected);
+
+function displaySelected() {
   const checked = nav.querySelector("input:checked");
   switch (checked.id) {
     case "by-book":
@@ -12,17 +18,6 @@ nav.addEventListener("change", () => {
     default:
       displayHome();
   }
-});
-
-import "./reset.css";
-import "./style.css";
-
-import "./toggleTheme.js";
-
-const main = document.querySelector("main");
-export function displayNewSection(section) {
-  main.innerHTML = "";
-  main.appendChild(section);
 }
 
-function displayHome() {}
+displaySelected();
