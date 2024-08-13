@@ -1,6 +1,10 @@
+import { sql } from "@vercel/postgres";
 import { displayNewSection } from "./DOMHelpers.js";
 import getClosestBooks from "./searchBooks.js";
-import books from "./books.json";
+
+export const books = (
+  await sql`SELECT books.title, authors.name as author FROM books JOIN authors ON authors.id = books.author_id;`
+).rows;
 
 export default function createBooksSection() {
   const container = document.createElement("section");
@@ -31,7 +35,7 @@ function createBook(book) {
   bookContainer.classList.add("book");
 
   const title = document.createElement("h2");
-  title.textContent = book.name;
+  title.textContent = book.title;
 
   const author = document.createElement("p");
   author.textContent = book.author;
@@ -48,10 +52,15 @@ function createBooksSearch() {
   return input;
 }
 
+const SEARCH_OFFSET = 300;
+let searchInterval;
 function displayBooksBySearch(event) {
   const searchQuery = event.target.value;
   if (!searchQuery) return createBooksSection();
 
-  const closestBooks = getClosestBooks(searchQuery);
-  appendBooksTo(document.querySelector(".books"), closestBooks);
+  clearInterval(searchInterval);
+  searchInterval = setInterval(() => {
+    const closestBooks = getClosestBooks(searchQuery);
+    appendBooksTo(document.querySelector(".books"), closestBooks);
+  }, SEARCH_OFFSET);
 }
