@@ -12,7 +12,7 @@ TODO.md
 .env.*
 
 # Temporary
-node-temp/
+copyBookText.js
 
 # Vercel
 .vercel

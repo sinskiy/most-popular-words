@@ -1,3 +1,4 @@
+import DotenvWebpackPlugin from "dotenv-webpack";
 import HtmlWebpackPlugin from "html-webpack-plugin";
 import { resolve } from "path";
 
@@ -10,6 +11,7 @@ export default {
   },
   devtool: "inline-source-map",
   plugins: [
+    new DotenvWebpackPlugin({ path: "./.env.development.local" }),
     new HtmlWebpackPlugin({
       template: "./src/index.html",
     }),

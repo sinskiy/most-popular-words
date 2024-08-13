@@ -1,5 +1,5 @@
+import { books } from "./DOMBooks.js";
 import { getAlphabeticString, lowerIncludes } from "./helpers.js";
-import books from "./books.json";
 
 export default function getClosestBooks(searchQuery) {
   const normalizedSearchQuery = getAlphabeticString(searchQuery).toLowerCase();
@@ -7,18 +7,16 @@ export default function getClosestBooks(searchQuery) {
   for (const book of books) {
     let scoreToAdd = 0;
 
-    if (lowerIncludes(book.name, normalizedSearchQuery)) {
+    if (lowerIncludes(book.title, normalizedSearchQuery)) {
       scoreToAdd += 50;
     }
 
     if (lowerIncludes(book.author, normalizedSearchQuery)) {
       scoreToAdd += 40;
     }
-    for (const namePart of book.author.split(" ")) {
+    for (const namePart of book.title.split(" ")) {
       if (isNamePartIncludes(namePart)) {
         scoreToAdd += 5;
-      } else {
-        scoreToAdd++;
       }
     }
 
@@ -36,7 +34,7 @@ export default function getClosestBooks(searchQuery) {
       }
     }
 
-    scoreToAdd -= book.name.length / 3;
+    scoreToAdd -= book.title.length / 3;
 
     if (searchResults.has(book)) {
       const prev = searchResults.get(book);

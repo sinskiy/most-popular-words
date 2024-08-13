@@ -1,5 +1,9 @@
-import words from "./total.json";
+import { sql } from "@vercel/postgres";
 import { displayNewSection } from "./DOMHelpers.js";
+
+const totalWords = (
+  await sql`SELECT word, occurences FROM total ORDER BY occurences DESC;`
+).rows;
 
 export default async function displayHome() {
   const container = document.createElement("section");
@@ -10,7 +14,7 @@ export default async function displayHome() {
   displayNewSection(container);
 }
 
-export function appendWordsTo(wordsContainer, wordsList = words) {
+export function appendWordsTo(wordsContainer, wordsList = totalWords) {
   for (const wordCount of wordsList) {
     const wordContainer = document.createElement("article");
     wordContainer.classList.add("word-container");
@@ -20,15 +24,13 @@ export function appendWordsTo(wordsContainer, wordsList = words) {
   }
 }
 
-function createWord(wordCount) {
-  const [word, count] = wordCount;
-
+function createWord({ word, occurences }) {
   const wordElement = document.createElement("p");
   wordElement.textContent = word;
   wordElement.classList.add("word");
 
   const countElement = document.createElement("p");
-  countElement.textContent = count;
+  countElement.textContent = occurences;
   countElement.classList.add("count");
 
   return [wordElement, countElement];
