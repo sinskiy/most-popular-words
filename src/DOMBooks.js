@@ -1,6 +1,7 @@
 import { sql } from "@vercel/postgres";
 import { displayNewSection } from "./DOMHelpers.js";
 import getClosestBooks from "./searchBooks.js";
+import createBookSection from "./DOMBook.js";
 
 export const books = (
   await sql`SELECT books.title, authors.name as author FROM books JOIN authors ON authors.id = books.author_id;`
@@ -33,6 +34,9 @@ function appendBooksTo(booksContainer, booksList = books) {
 function createBook(book) {
   const bookContainer = document.createElement("button");
   bookContainer.classList.add("book");
+  bookContainer.addEventListener("click", () =>
+    createBookSection(book.title, book.author),
+  );
 
   const title = document.createElement("h2");
   title.textContent = book.title;
