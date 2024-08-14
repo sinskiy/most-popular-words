@@ -3,8 +3,6 @@ import { displayNewSection } from "./DOMHelpers.js";
 
 const WORDS_PER_PAGE = 10;
 export default async function displayPage(pageNumber = 1) {
-  console.log(pageNumber);
-
   const container = document.createElement("section");
   container.classList.add("words");
 
@@ -42,7 +40,6 @@ function appendPagesTo(wordsContainer, selectedPage) {
     if (i > pages || i < 0) continue;
 
     const currentPage = i + 1;
-    console.log(currentPage);
 
     const page = document.createElement("li");
     page.classList.add("page");
@@ -64,7 +61,14 @@ function appendPagesTo(wordsContainer, selectedPage) {
   wordsContainer.appendChild(pagination);
 }
 
-function createWord({ word, occurences }) {
+function createWord(wordStructure) {
+  let word, occurences;
+  if (typeof wordStructure === "object") {
+    word = wordStructure.word;
+    occurences = wordStructure.occurences;
+  } else {
+    word = wordStructure;
+  }
   const wordElement = document.createElement("p");
   wordElement.textContent = word;
   wordElement.classList.add("word");
