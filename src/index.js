@@ -1,5 +1,5 @@
 import displayBooks from "./DOMBooks.js";
-import displayHome from "./DOMHome.js";
+import displayPage from "./DOMPage.js";
 import "./loadTheme.js";
 import "./reset.css";
 import "./style.css";
@@ -16,7 +16,7 @@ function displaySelected() {
       break;
 
     default:
-      displayHome();
+      displayPage();
   }
 }
 
