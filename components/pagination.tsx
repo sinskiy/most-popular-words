@@ -8,7 +8,7 @@ interface PaginationProps {
 }
 
 export const PAGE_CLASSES =
-  "size-10 flex items-center justify-center rounded-md border-2 border-opacity-30";
+  "size-10 flex items-center justify-center border-2 border-opacity-30";
 
 export default function Pagination({ curr, end }: PaginationProps) {
   const pagesToRender = getPages(curr, end);

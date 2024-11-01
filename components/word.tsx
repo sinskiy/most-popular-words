@@ -8,7 +8,7 @@ export default function Word({
 }: Word & { rank: number }) {
   return (
     <li
-      className={`w-full px-12 py-4 flex items-center rounded-2xl border-2 border-opacity-30 ${
+      className={`w-full px-12 py-4 flex items-center border-2 border-opacity-30 ${
         rank === 1
           ? "bg-yellow-950 border-yellow-500"
           : rank === 2

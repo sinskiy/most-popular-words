@@ -3,7 +3,7 @@ import Words from "../components/words";
 
 export default function Home() {
   return (
-    <main className="flex flex-col gap-4 max-w-screen-lg mx-auto">
+    <main className="flex flex-col gap-4">
       <Words list={WORDS} />
       <Pagination curr={1} end={1200} />
     </main>
