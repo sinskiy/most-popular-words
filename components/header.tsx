@@ -8,10 +8,7 @@ export default function Header() {
       </Link>
       <nav className="flex gap-4 items-center">
         <Link href="/log-in">log in</Link>
-        <Link
-          href="/sign-up"
-          className="bg-yellow-950 border-2 border-opacity-30 border-yellow-500 p-1"
-        >
+        <Link href="/sign-up" className="primary p-1">
           sign up
         </Link>
       </nav>

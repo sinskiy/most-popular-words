@@ -14,7 +14,7 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="en">
-      <body className="bg-black text-white m-4 flex flex-col gap-8 max-w-screen-lg mx-auto">
+      <body className="bg-black text-white m-4 flex flex-col gap-4 max-w-screen-lg mx-auto">
         <Header />
         {children}
       </body>

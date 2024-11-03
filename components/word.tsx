@@ -8,14 +8,14 @@ export default function Word({
 }: Word & { rank: number }) {
   return (
     <li
-      className={`w-full px-12 py-4 flex items-center border-2 border-opacity-30 ${
+      className={`w-full px-12 py-4 flex items-center ${
         rank === 1
-          ? "bg-yellow-950 border-yellow-500"
+          ? "primary"
           : rank === 2
-          ? "bg-stone-800 border-stone-100"
+          ? "secondary"
           : rank == 3
-          ? "bg-orange-950 border-orange-500"
-          : "bg-slate-950 border-slate-300"
+          ? "tertiary"
+          : "neutral"
       }`}
     >
       <p className="flex-1 flex gap-8 items-center">
