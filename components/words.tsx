@@ -1,5 +1,5 @@
 import { type Word as IWord } from "../lib/word";
-import Word from "../components/word";
+import Word from "./word";
 
 interface WordsProps {
   list: IWord[];
