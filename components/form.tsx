@@ -1,13 +1,12 @@
 import { FormHTMLAttributes, PropsWithChildren } from "react";
-import { useFormStatus } from "react-dom";
 
 interface FormProps
   extends FormHTMLAttributes<HTMLFormElement>,
-    PropsWithChildren {}
+    PropsWithChildren {
+  pending: boolean;
+}
 
-export default function Form({ children, ...props }: FormProps) {
-  const { pending } = useFormStatus();
-
+export default function Form({ pending, children, ...props }: FormProps) {
   return (
     <form {...props} className="flex flex-col gap-4">
       {children}
