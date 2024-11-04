@@ -9,7 +9,7 @@ interface FormProps
 export default function Form({ pending, children, ...props }: FormProps) {
   return (
     <form {...props} className="flex flex-col gap-4">
-      {children}
+      <div className="flex flex-col gap-2">{children}</div>
       <button disabled={pending} type="submit" className="w-fit p-2 primary">
         submit
       </button>
