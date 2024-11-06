@@ -9,6 +9,7 @@ interface InputFieldProps extends InputHTMLAttributes<HTMLInputElement> {
   type: HTMLInputTypeAttribute;
   autoComplete: HTMLInputAutoCompleteAttribute;
   error?: string | string[];
+  errorAsArray?: boolean;
 }
 
 export default function InputField({
@@ -18,6 +19,7 @@ export default function InputField({
   type,
   autoComplete,
   error,
+  errorAsArray = false,
   ...props
 }: InputFieldProps) {
   return (
@@ -35,18 +37,19 @@ export default function InputField({
           className="outline-none neutral text-3xl p-2 focus:primary"
         />
       </div>
-      {error && Array.isArray(error) ? (
-        <div>
-          <p>{labelText} must:</p>
-          <ul>
-            {error.map((err) => (
-              <li key={err}>{err}</li>
-            ))}
-          </ul>
-        </div>
-      ) : (
-        <p>{error}</p>
-      )}
+      {error &&
+        (Array.isArray(error) && errorAsArray ? (
+          <div className="text-sm">
+            <p className="text-stone-400">{labelText} must:</p>
+            <ul className="text-red-200">
+              {error.map((err) => (
+                <li key={err}>{err}</li>
+              ))}
+            </ul>
+          </div>
+        ) : (
+          <p className="text-sm text-red-200">{error}</p>
+        ))}
     </>
   );
 }

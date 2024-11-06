@@ -1,5 +1,5 @@
 import Link from "next/link";
-import Back from "./back";
+import Back from "../components/back";
 
 export default function NotFound() {
   return (
