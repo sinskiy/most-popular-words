@@ -6,8 +6,12 @@ import db from "../configs/pg";
 import jwt, { JwtPayload } from "jsonwebtoken";
 import { cookies } from "next/headers";
 import { User } from "../types/user";
+import { getErrorMessage } from "../lib/helpers";
 
-export async function signUp(state: FormState, formData: FormData) {
+export async function signUp(
+  state: FormState,
+  formData: FormData
+): Promise<FormState> {
   const validatedFields = UserFormSchema.safeParse(
     Object.fromEntries(formData)
   );
@@ -40,14 +44,17 @@ export async function signUp(state: FormState, formData: FormData) {
     if (!user) {
       return { message: "Couldn't create user" };
     }
-  } catch (err) {
-    return err;
+  } catch (e) {
+    return getErrorMessage(e);
   }
 
   redirect("/log-in");
 }
 
-export async function logIn(state: FormState, formData: FormData) {
+export async function logIn(
+  state: FormState,
+  formData: FormData
+): Promise<FormState> {
   const validatedFields = UserFormSchema.safeParse(
     Object.fromEntries(formData)
   );
@@ -89,8 +96,8 @@ export async function logIn(state: FormState, formData: FormData) {
       sameSite: "lax",
       path: "/",
     });
-  } catch (err) {
-    return err;
+  } catch (e) {
+    return getErrorMessage(e);
   }
 
   redirect("/");

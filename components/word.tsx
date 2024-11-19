@@ -1,4 +1,4 @@
-import { type Word } from "../lib/word";
+import { type Word } from "../types/word";
 
 export default function Word({
   rank,

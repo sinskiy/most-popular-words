@@ -1,4 +1,4 @@
-import { type Word as IWord } from "../lib/word";
+import { type Word as IWord } from "../types/word";
 import Word from "./word";
 
 interface WordsProps {
