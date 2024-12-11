@@ -1,5 +1,5 @@
 export interface Word {
-  label: string;
-  occurences: number;
-  percentage: number;
+  value: string;
+  occurrences: number;
+  // percentage: number;
 }

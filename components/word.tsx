@@ -2,9 +2,8 @@ import { type Word } from "../types/word";
 
 export default function Word({
   rank,
-  label,
-  occurences,
-  percentage,
+  value,
+  occurrences,
 }: Word & { rank: number }) {
   return (
     <li
@@ -19,15 +18,13 @@ export default function Word({
       }`}
     >
       <p className="flex-1 flex gap-8 items-center">
-        {rank}. <span className="text-4xl font-medium">{label}</span>
+        {rank}. <span className="text-4xl font-medium">{value}</span>
       </p>
       <div className="flex gap-8">
         <p className="flex gap-2">
-          <span className="font-bold">{occurences}</span> occurences
+          <span className="font-bold">{occurrences}</span> occurences
         </p>
-        <p>
-          <span className="font-bold">{percentage}</span>%
-        </p>
+        {/* <p className="font-bold">{percentage}%</p> */}
       </div>
     </li>
   );

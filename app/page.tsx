@@ -1,54 +1,29 @@
 import Pagination from "../components/pagination";
 import Words from "../components/words";
+import db from "../configs/pg";
+import { Word } from "../types/word";
+import { PageProps } from "../types/page";
 
-export default function Home() {
+export default async function Home({ searchParams }: PageProps) {
+  const params = await searchParams;
+  const page = Number(params.page ?? 1);
   return (
     <main className="flex flex-col gap-4">
-      <Words list={WORDS} />
+      <WordsServer page={page} />
       <Pagination curr={1} end={1200} />
     </main>
   );
 }
 
-const WORDS = [
-  {
-    label: "sinskiy",
-    occurences: 99999,
-    percentage: 100,
-  },
-  {
-    label: "kilwinta",
-    occurences: 99999,
-    percentage: 100,
-  },
-  {
-    label: "john",
-    occurences: 99999,
-    percentage: 100,
-  },
-  {
-    label: "galt",
-    occurences: 99999,
-    percentage: 100,
-  },
-  {
-    label: "atlas",
-    occurences: 99999,
-    percentage: 100,
-  },
-  {
-    label: "shrugged",
-    occurences: 54000,
-    percentage: 12.0,
-  },
-  {
-    label: "ayn",
-    occurences: 12545,
-    percentage: 5.12,
-  },
-  {
-    label: "rand",
-    occurences: 5444,
-    percentage: 2.01,
-  },
-];
+const ITEMS_PER_PAGE = 10;
+
+async function WordsServer({ page }: { page: number }) {
+  const offset = (page - 1) * ITEMS_PER_PAGE;
+
+  const words = await db.query<Word>(
+    "SELECT value, occurrences FROM words LIMIT $1 OFFSET $2",
+    [ITEMS_PER_PAGE, offset]
+  );
+
+  return <Words list={words.rows} />;
+}
