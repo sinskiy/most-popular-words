@@ -5,12 +5,13 @@ import { PageProps } from "../types/page";
 import queryThrowError from "../lib/query-throw-error";
 import cacheDb from "../lib/cache-db";
 import { getUser } from "../actions/auth";
+import { ITEMS_PER_PAGE } from "../lib/db";
 
 const getWords = cacheDb(
   async (offset: number, search: string, username?: string) =>
     await queryThrowError<Word>(
       "Couldn't get words",
-      "SELECT value, occurrences, value in (SELECT word FROM likes WHERE username = $1) AS liked FROM words WHERE value LIKE $2 ORDER BY occurrences DESC LIMIT $3 OFFSET $4",
+      "SELECT value, occurrences, value in (SELECT word FROM saved WHERE username = $1) AS saved FROM words WHERE value LIKE $2 ORDER BY occurrences DESC LIMIT $3 OFFSET $4",
       [username, `%${search}%`, ITEMS_PER_PAGE, offset]
     ),
   ["words"]
@@ -18,7 +19,7 @@ const getWords = cacheDb(
 
 const getWordsCount = cacheDb(
   async (search: string) =>
-    await queryThrowError(
+    await queryThrowError<{ count: number }>(
       "Couldn't get words count",
       "SELECT COUNT(*) FROM words WHERE value LIKE $1",
       [`%${search}%`]
@@ -50,5 +51,3 @@ export default async function Home({ searchParams }: PageProps) {
     </main>
   );
 }
-
-const ITEMS_PER_PAGE = 10;

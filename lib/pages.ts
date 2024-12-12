@@ -11,10 +11,13 @@ export function getPages(curr: number, end: number) {
     pages.push(curr + 1);
   }
 
+  pages.sort();
+  if (end !== 1 && end >= curr) {
+    pages.push(end);
+  }
+
   const prev = curr !== 1,
     next = curr < end;
-
-  pages.sort((a, b) => a - b), pages.push(end);
 
   return { prev, pages, next };
 }

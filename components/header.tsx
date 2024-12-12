@@ -12,7 +12,10 @@ export default async function Header() {
       <Search />
       <nav className="flex gap-4 items-center">
         {user ? (
-          <button onClick={logOut}>log out</button>
+          <>
+            <Link href="/saved">saved</Link>
+            <button onClick={logOut}>log out</button>
+          </>
         ) : (
           <>
             <Link href="/log-in">log in</Link>

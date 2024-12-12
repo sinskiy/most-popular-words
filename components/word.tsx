@@ -2,7 +2,7 @@ import { revalidateTag } from "next/cache";
 import db from "../configs/pg";
 import { User } from "../types/user";
 import { type Word } from "../types/word";
-import Like from "./like";
+import Save from "./save";
 
 interface WordProps {
   user: false | User;
@@ -11,17 +11,17 @@ interface WordProps {
 }
 
 export default async function Word({ user, rank, word }: WordProps) {
-  async function handleLike() {
+  async function handleSave() {
     "use server";
     if (user === false) return;
 
-    if (word.liked) {
-      await db.query("DELETE FROM likes WHERE word = $1 AND username = $2", [
+    if (word.saved) {
+      await db.query("DELETE FROM saved WHERE word = $1 AND username = $2", [
         word.value,
         user.username,
       ]);
     } else {
-      await db.query("INSERT INTO likes (word, username) VALUES ($1, $2)", [
+      await db.query("INSERT INTO saved (word, username) VALUES ($1, $2)", [
         word.value,
         user.username,
       ]);
@@ -44,7 +44,7 @@ export default async function Word({ user, rank, word }: WordProps) {
         {rank}. <span className="text-4xl font-medium">{word.value}</span>
       </p>
       <div className="flex gap-8">
-        <Like user={user} word={word} likeAction={handleLike} />
+        <Save user={user} word={word} saveAction={handleSave} />
         <p className="flex gap-2">
           <span className="font-bold">{word.occurrences}</span> occurences
         </p>

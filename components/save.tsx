@@ -3,18 +3,18 @@
 import { Word } from "../types/word";
 import { User } from "../types/user";
 
-interface LikeProps {
+interface SaveProps {
   user: false | User;
   word: Word;
-  likeAction: (formData: FormData) => void;
+  saveAction: (formData: FormData) => void;
 }
 
-export default function Like({ likeAction, user, word }: LikeProps) {
+export default function Save({ saveAction, user, word }: SaveProps) {
   return (
-    <form action={likeAction}>
+    <form action={saveAction}>
       {user !== false && (
         <button type="submit" aria-label="save" title="save">
-          <img src={word.liked ? "/like-filled.svg" : "/like.svg"} alt="" />
+          <img src={word.saved ? "/like-filled.svg" : "/like.svg"} alt="" />
         </button>
       )}
     </form>
