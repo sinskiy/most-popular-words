@@ -11,7 +11,7 @@ const getWords = cacheDb(
   async (offset: number, search: string, username?: string) =>
     await queryThrowError<Word>(
       "Couldn't get words",
-      "SELECT value, occurrences, value in (SELECT word FROM saved WHERE username = $1) AS saved FROM words WHERE value LIKE $2 ORDER BY occurrences DESC LIMIT $3 OFFSET $4",
+      "SELECT value, occurrences, percentage, value in (SELECT word FROM saved WHERE username = $1) AS saved FROM words_with_percentage WHERE value LIKE $2 ORDER BY occurrences DESC LIMIT $3 OFFSET $4",
       [username, `%${search}%`, ITEMS_PER_PAGE, offset]
     ),
   ["words"]

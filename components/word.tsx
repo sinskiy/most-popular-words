@@ -46,9 +46,15 @@ export default async function Word({ user, rank, word }: WordProps) {
       <div className="flex gap-8">
         <Save user={user} word={word} saveAction={handleSave} />
         <p className="flex gap-2">
-          <span className="font-bold">{word.occurrences}</span> occurences
+          <span className="font-bold">{word.occurrences}</span> occurrence
+          {word.occurrences !== 1 && "s"}
         </p>
-        {/* <p className="font-bold">{percentage}%</p> */}
+        <p className="flex gap-2">
+          <span className="font-bold">
+            {(word.percentage * 100).toFixed(2)}
+          </span>
+          %
+        </p>
       </div>
     </li>
   );
