@@ -3,6 +3,26 @@ import Words from "../components/words";
 import { Word } from "../types/word";
 import { PageProps } from "../types/page";
 import queryThrowError from "../lib/query-throw-error";
+import cacheDb from "../lib/cache-db";
+
+const getWords = cacheDb(
+  async (offset) =>
+    await queryThrowError<Word>(
+      "500",
+      "Couldn't get words",
+      "SELECT value, occurrences FROM words ORDER BY occurrences DESC LIMIT $1 OFFSET $2",
+      [ITEMS_PER_PAGE, offset]
+    )
+);
+
+const getWordsCount = cacheDb(
+  async () =>
+    await queryThrowError(
+      "500",
+      "Couldn't get words count",
+      "SELECT COUNT(*) FROM words"
+    )
+);
 
 export default async function Home({ searchParams }: PageProps) {
   const params = await searchParams;
@@ -10,18 +30,9 @@ export default async function Home({ searchParams }: PageProps) {
 
   const offset = (page - 1) * ITEMS_PER_PAGE;
 
-  const words = await queryThrowError<Word>(
-    "500",
-    "Couldn't get words",
-    "SELECT value, occurrences FROM words ORDER BY occurrences DESC LIMIT $1 OFFSET $2",
-    [ITEMS_PER_PAGE, offset]
-  );
+  const words = await getWords(offset);
 
-  const wordsCount = await queryThrowError(
-    "500",
-    "Couldn't get words count",
-    "SELECT COUNT(*) FROM words"
-  );
+  const wordsCount = await getWordsCount();
   const totalPages = Math.ceil(wordsCount.rows[0].count / ITEMS_PER_PAGE);
 
   return (
