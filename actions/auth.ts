@@ -8,10 +8,15 @@ import { cookies } from "next/headers";
 import { User } from "../types/user";
 import { getErrorMessage } from "../lib/helpers";
 
+type AuthFormState = FormState<{
+  username?: string[];
+  password?: string[];
+}>;
+
 export async function signUp(
-  state: FormState,
+  state: AuthFormState,
   formData: FormData
-): Promise<FormState> {
+): Promise<AuthFormState> {
   const validatedFields = UserFormSchema.safeParse(
     Object.fromEntries(formData)
   );
@@ -52,9 +57,9 @@ export async function signUp(
 }
 
 export async function logIn(
-  state: FormState,
+  state: AuthFormState,
   formData: FormData
-): Promise<FormState> {
+): Promise<AuthFormState> {
   const validatedFields = UserFormSchema.safeParse(
     Object.fromEntries(formData)
   );

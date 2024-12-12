@@ -1,5 +1,6 @@
 import Link from "next/link";
 import { getUser, logOut } from "../actions/auth";
+import Search from "./search";
 
 export default async function Header() {
   const user = await getUser();
@@ -8,6 +9,7 @@ export default async function Header() {
       <Link href="/" className="text-2xl font-medium">
         most popular words in _______
       </Link>
+      <Search />
       <nav className="flex gap-4 items-center">
         {user ? (
           <button onClick={logOut}>log out</button>

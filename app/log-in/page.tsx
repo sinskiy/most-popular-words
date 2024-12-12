@@ -11,7 +11,7 @@ export default function LogIn() {
   return (
     <Form
       action={action}
-      pending={false}
+      pending={pending}
       heading="log in"
       message={state?.message}
     >

@@ -11,7 +11,7 @@ export default function SignUp() {
   return (
     <Form
       action={action}
-      pending={false}
+      pending={pending}
       heading="sign up"
       message={state?.message}
     >

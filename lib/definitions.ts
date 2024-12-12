@@ -16,12 +16,9 @@ export const UserFormSchema = z.object({
     .trim(),
 });
 
-export type FormState =
+export type FormState<T> =
   | {
-      errors?: {
-        username?: string[];
-        password?: string[];
-      };
+      errors?: T;
       message?: string;
     }
   | undefined;
