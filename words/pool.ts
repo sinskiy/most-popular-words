@@ -10,7 +10,7 @@ async function addWordsFromAllDirectories(
   path = "./words/input"
 ) {
   if (deleteWords === true) {
-    await db.query("DELETE FROM words;");
+    await db.query("DELETE FROM words");
   }
 
   const files = await readdir(path);

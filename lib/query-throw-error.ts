@@ -5,7 +5,7 @@ export default async function queryThrowError<T extends QueryResultRow = any>(
   name: string,
   message: string,
   queryText: string,
-  values: any[]
+  values?: any[]
 ) {
   try {
     return await db.query<T>(queryText, values);

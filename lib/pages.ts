@@ -1,5 +1,5 @@
 export function getPages(curr: number, end: number) {
-  const pages: Array<number | string> = [1];
+  const pages: number[] = [1];
 
   if (curr !== 1 && curr !== end) {
     pages.push(curr);
@@ -11,7 +11,10 @@ export function getPages(curr: number, end: number) {
     pages.push(curr + 1);
   }
 
-  pages.sort(), pages.push(end);
+  const prev = curr !== 1,
+    next = curr < end;
 
-  return pages;
+  pages.sort((a, b) => a - b), pages.push(end);
+
+  return { prev, pages, next };
 }
