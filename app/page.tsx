@@ -4,14 +4,16 @@ import { Word } from "../types/word";
 import { PageProps } from "../types/page";
 import queryThrowError from "../lib/query-throw-error";
 import cacheDb from "../lib/cache-db";
+import { getUser } from "../actions/auth";
 
 const getWords = cacheDb(
-  async (offset: number, search: string) =>
+  async (offset: number, search: string, username?: string) =>
     await queryThrowError<Word>(
       "Couldn't get words",
-      "SELECT value, occurrences FROM words WHERE value LIKE $1 ORDER BY occurrences DESC LIMIT $2 OFFSET $3",
-      [`%${search}%`, ITEMS_PER_PAGE, offset]
-    )
+      "SELECT value, occurrences, value in (SELECT word FROM likes WHERE username = $1) AS liked FROM words WHERE value LIKE $2 ORDER BY occurrences DESC LIMIT $3 OFFSET $4",
+      [username, `%${search}%`, ITEMS_PER_PAGE, offset]
+    ),
+  ["words"]
 );
 
 const getWordsCount = cacheDb(
@@ -26,18 +28,24 @@ const getWordsCount = cacheDb(
 export default async function Home({ searchParams }: PageProps) {
   const params = await searchParams;
   const page = Number(params.page || 1);
-  const search = typeof params.search === "string" ? params.search ?? "" : "";
+  const search = (params.search ?? "") as string;
 
   const offset = (page - 1) * ITEMS_PER_PAGE;
 
-  const words = await getWords(offset, search);
+  const user = await getUser();
+
+  const words = await getWords(
+    offset,
+    search,
+    typeof user !== "boolean" ? user.username : undefined
+  );
 
   const wordsCount = await getWordsCount(search);
   const totalPages = Math.ceil(wordsCount.rows[0].count / ITEMS_PER_PAGE);
 
   return (
     <main className="flex flex-col gap-4">
-      <Words list={words.rows} />
+      <Words list={words.rows} user={user} />
       <Pagination curr={page} end={totalPages} />
     </main>
   );

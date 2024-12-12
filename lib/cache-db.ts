@@ -6,5 +6,8 @@ export default function cacheDb<T extends (...args: any[]) => Promise<any>>(
   cb: T,
   keyParts?: string[]
 ) {
-  return unstable_cache(cb, keyParts, { revalidate: DB_REVALIDATE_S });
+  return unstable_cache(cb, keyParts, {
+    revalidate: DB_REVALIDATE_S,
+    tags: keyParts,
+  });
 }

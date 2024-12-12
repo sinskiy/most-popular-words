@@ -7,6 +7,7 @@ import jwt, { JwtPayload } from "jsonwebtoken";
 import { cookies } from "next/headers";
 import { User } from "../types/user";
 import { getErrorMessage } from "../lib/helpers";
+import { unstable_cache } from "next/cache";
 
 type AuthFormState = FormState<{
   username?: string[];
@@ -108,6 +109,15 @@ export async function logIn(
   redirect("/");
 }
 
+const getUserFromDb = unstable_cache(
+  async (username: string) =>
+    await db.query("SELECT username FROM users WHERE username = $1", [
+      username,
+    ]),
+  ["user"],
+  { revalidate: 60 * 60 }
+);
+
 export async function getUser(): Promise<User | false> {
   try {
     const token = (await cookies()).get("token")?.value;
@@ -118,10 +128,7 @@ export async function getUser(): Promise<User | false> {
       process.env.JWT_SECRET!
     ) as JwtPayload;
 
-    const data = await db.query(
-      "SELECT username FROM users  WHERE username = $1",
-      [username]
-    );
+    const data = await getUserFromDb(username);
 
     const user = data.rows[0];
     if (!user) {

@@ -9,6 +9,7 @@ export default async function queryThrowError<T extends QueryResultRow = any>(
   try {
     return await db.query<T>(queryText, values);
   } catch (e) {
+    console.log(e);
     const error = new Error(message);
     throw error;
   }
