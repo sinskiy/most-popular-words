@@ -3,6 +3,7 @@ import {
   HTMLInputTypeAttribute,
   InputHTMLAttributes,
 } from "react";
+import cn from "../lib/cn";
 
 interface InputFieldProps extends InputHTMLAttributes<HTMLInputElement> {
   labelText?: string;
@@ -10,6 +11,7 @@ interface InputFieldProps extends InputHTMLAttributes<HTMLInputElement> {
   autoComplete: HTMLInputAutoCompleteAttribute;
   error?: string | string[];
   errorAsArray?: boolean;
+  small?: boolean;
 }
 
 export default function InputField({
@@ -20,6 +22,8 @@ export default function InputField({
   autoComplete,
   error,
   errorAsArray = false,
+  small = false,
+  className,
   ...props
 }: InputFieldProps) {
   return (
@@ -34,7 +38,10 @@ export default function InputField({
           type={type}
           autoComplete={autoComplete}
           {...props}
-          className="outline-none neutral text-3xl p-2 focus:primary"
+          className={cn([
+            "outline-none neutral p-2 focus:primary",
+            small ? "px-2 py-1" : "text-3xl",
+          ])}
         />
       </div>
       {error &&

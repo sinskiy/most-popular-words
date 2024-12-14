@@ -1,6 +1,7 @@
 "use client";
 
 import { usePathname, useRouter, useSearchParams } from "next/navigation";
+import setParams from "../lib/set-params";
 
 export default function Search() {
   const searchParams = useSearchParams();
@@ -9,12 +10,8 @@ export default function Search() {
 
   function handleSearch(search: string) {
     const params = new URLSearchParams(searchParams);
-    if (search) {
-      params.set("search", search);
-    } else {
-      params.delete("search");
-    }
-    replace(`${pathname}?${params.toString()}`);
+    const newParams = setParams(params, search, ["search"]);
+    replace(`${pathname}?${newParams.toString()}`);
   }
 
   return (
