@@ -3,7 +3,7 @@ import {
   HTMLInputTypeAttribute,
   InputHTMLAttributes,
 } from "react";
-import cn from "../lib/cn";
+import { cn } from "../lib/helpers";
 
 interface InputFieldProps extends InputHTMLAttributes<HTMLInputElement> {
   labelText?: string;

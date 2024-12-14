@@ -1,31 +1,9 @@
 import { getUser } from "../../actions/auth";
+import { getSaved, getSavedCount } from "../../actions/saved";
 import Pagination from "../../components/pagination";
 import Words from "../../components/words";
-import cacheDb from "../../lib/cache-db";
 import { getTotalPages, ITEMS_PER_PAGE } from "../../lib/db";
-import queryThrowError from "../../lib/query-throw-error";
 import { PageProps } from "../../types/page";
-import { Word } from "../../types/word";
-
-const getSaved = cacheDb(
-  async (offset: number, username: string) =>
-    await queryThrowError<Word>(
-      "Couldn't get saved words",
-      "SELECT value, occurrences, percentage, true as saved FROM words_with_percentage WHERE value in (SELECT word FROM saved WHERE username = $1) LIMIT $2 OFFSET $3",
-      [username, ITEMS_PER_PAGE, offset]
-    ),
-  ["words"]
-);
-
-const getSavedCount = cacheDb(
-  async (username: string) =>
-    await queryThrowError<{ count: number }>(
-      "Couldn't get saved count",
-      "SELECT COUNT(*) FROM saved WHERE username = $1",
-      [username]
-    ),
-  ["words"]
-);
 
 export default async function Saved({ searchParams }: PageProps) {
   const params = await searchParams;

@@ -13,6 +13,7 @@ export default async function Header() {
       <nav className="flex gap-4 items-center">
         {user ? (
           <>
+            <Link href="/learn">learn</Link>
             <Link href="/saved">saved</Link>
             <button onClick={logOut}>log out</button>
           </>

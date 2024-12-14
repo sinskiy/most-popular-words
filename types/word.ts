@@ -7,3 +7,10 @@ export interface Word {
   definition: string | null;
   example: string | null;
 }
+
+export interface SavedWord extends Word {
+  source: string;
+  knowledge: (typeof knowledge)[number];
+}
+
+export const knowledge = ["again", "hard", "good", "easy"] as const;

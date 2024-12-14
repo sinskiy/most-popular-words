@@ -1,5 +1,5 @@
 import { HTMLAttributes, PropsWithChildren, ReactNode } from "react";
-import cn from "../lib/cn";
+import { cn } from "../lib/helpers";
 
 interface DropdownProps extends PropsWithChildren, HTMLAttributes<HTMLElement> {
   id: string;

@@ -1,7 +1,7 @@
 "use client";
 
 import { usePathname, useRouter, useSearchParams } from "next/navigation";
-import setParams from "../lib/set-params";
+import { setParams } from "../lib/helpers";
 
 export default function Search() {
   const searchParams = useSearchParams();

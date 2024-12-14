@@ -1,7 +1,6 @@
 "use server";
 
 import { revalidateTag } from "next/cache";
-import queryThrowError from "../lib/query-throw-error";
 import db from "../configs/pg";
 
 export async function setWordDetails(

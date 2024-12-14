@@ -21,9 +21,8 @@ const getWords = cacheDb(
     await queryThrowError<Word>(
       "Couldn't get words",
       `SELECT value, occurrences, percentage, value in (SELECT word FROM saved WHERE username = $1) AS saved, translation, definition, example
-           FROM words_with_percentage
-       FULL OUTER JOIN user_words ON words_with_percentage.value = user_words.word
-           WHERE value LIKE $2 AND source LIKE $3 AND (value in (SELECT word FROM saved WHERE username = $1) = $4 OR value in (SELECT word FROM saved WHERE username = $1) = true) AND (user_words.username = $1 OR username IS NULL)
+           FROM user_words_with_percentage
+           WHERE value LIKE $2 AND source LIKE $3 AND (value in (SELECT word FROM saved WHERE username = $1) = $4 OR value in (SELECT word FROM saved WHERE username = $1) = true) AND (username = $1 OR username IS NULL)
        ORDER BY ` +
         getWordsSort(sort) +
         " LIMIT $5 OFFSET $6",
