@@ -24,7 +24,7 @@ export default function LogIn() {
       <InputField
         id="password"
         type="password"
-        autoComplete="new-password"
+        autoComplete="current-password"
         error={state?.errors?.password}
       />
     </Form>

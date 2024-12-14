@@ -1,6 +1,7 @@
 import Link from "next/link";
 import { getUser, logOut } from "../actions/auth";
 import Search from "./search";
+import { cn } from "../lib/helpers";
 
 export default async function Header() {
   const user = await getUser();
@@ -13,6 +14,17 @@ export default async function Header() {
       <nav className="flex gap-4 items-center">
         {user ? (
           <>
+            <div
+              className={cn([
+                "flex gap-1",
+                new Date(user.last_streak).toDateString() !==
+                  new Date().toDateString() &&
+                  "opacity-80 [filter:grayscale(1)]",
+              ])}
+            >
+              <img src="/streak.svg" alt="" />
+              <p className="text-yellow-500">{user.streak}</p>
+            </div>
             <Link href="/learn">learn</Link>
             <Link href="/saved">saved</Link>
             <button onClick={logOut}>log out</button>

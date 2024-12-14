@@ -68,7 +68,7 @@ export default function LearnWord({ user, words }: LearnWordProps) {
   const [showAnswers, setShowAnswers] = useState(false);
 
   const [state, action, pending] = useActionState(
-    updateKnowledge.bind(null, { words: localWords, username: user.username }),
+    updateKnowledge.bind(null, { words: localWords, user: user }),
     undefined
   );
 
@@ -94,12 +94,7 @@ export default function LearnWord({ user, words }: LearnWordProps) {
                 {(["translation", "definition", "example"] as const).map(
                   (value) => (
                     <Fragment key={value}>
-                      <InputField
-                        type="text"
-                        id={value}
-                        autoComplete=""
-                        small
-                      />
+                      <InputField type="text" id={value} />
                       {showAnswers && (
                         <p>
                           {filteredWords[randomWordIndex][value] ?? (

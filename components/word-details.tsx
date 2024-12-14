@@ -37,27 +37,15 @@ export default function WordDetails({ user, word }: WordDetails) {
         action={action}
         message={state?.message}
       >
-        <InputField
-          type="text"
-          id="translation"
-          autoComplete=""
-          small
-          defaultValue={word.translation ?? ""}
-        />
-        <InputField
-          type="text"
-          id="definition"
-          autoComplete=""
-          small
-          defaultValue={word.definition ?? ""}
-        />
-        <InputField
-          type="text"
-          id="example"
-          autoComplete=""
-          small
-          defaultValue={word.example ?? ""}
-        />
+        {(["translation", "definition", "example"] as const).map((value) => (
+          <InputField
+            key={value}
+            type="text"
+            id={value}
+            small
+            defaultValue={word[value] ?? ""}
+          />
+        ))}
       </Form>
     </Dropdown>
   );

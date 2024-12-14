@@ -109,13 +109,14 @@ export async function logIn(
   redirect("/");
 }
 
-const getUserFromDb = unstable_cache(
+export const getUserFromDb = unstable_cache(
   async (username: string) =>
-    await db.query("SELECT username FROM users WHERE username = $1", [
-      username,
-    ]),
+    await db.query(
+      "SELECT username, streak, last_streak FROM users WHERE username = $1",
+      [username]
+    ),
   ["user"],
-  { revalidate: 60 * 60 }
+  { revalidate: 60 * 60, tags: ["user"] }
 );
 
 export async function getUser(): Promise<User | false> {
