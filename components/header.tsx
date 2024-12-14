@@ -2,6 +2,7 @@ import Link from "next/link";
 import { getUser, logOut } from "../actions/auth";
 import Search from "./search";
 import { cn } from "../lib/helpers";
+import { Suspense } from "react";
 
 export default async function Header() {
   const user = await getUser();
@@ -10,7 +11,9 @@ export default async function Header() {
       <Link href="/" className="text-2xl font-medium">
         most popular words in _______
       </Link>
-      <Search />
+      <Suspense>
+        <Search />
+      </Suspense>
       <nav className="flex gap-4 items-center">
         {user ? (
           <>

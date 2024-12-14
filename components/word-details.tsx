@@ -14,12 +14,15 @@ interface WordDetails {
 }
 
 export default function WordDetails({ user, word }: WordDetails) {
-  if (user === false) return;
-
   const [state, action, pending] = useActionState(
-    setWordDetails.bind(null, { username: user.username, word: word.value }),
+    setWordDetails.bind(null, {
+      username: user && user.username,
+      word: word.value,
+    }),
     undefined
   );
+
+  if (user === false) return;
 
   return (
     <Dropdown

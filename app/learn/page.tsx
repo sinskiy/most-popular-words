@@ -6,9 +6,6 @@ import { PageProps } from "../../types/page";
 
 export default async function Learn({ searchParams }: PageProps) {
   const user = await getUser();
-  if (!user) throw new Error("Must be logged in");
-
-  const saved = await getSaved(0, user.username, 100);
 
   const params = await searchParams;
   const source = (params.source ?? "") as string;
@@ -19,12 +16,16 @@ export default async function Learn({ searchParams }: PageProps) {
       <nav>
         <Filters saved={false} />
       </nav>
-      <LearnWord
-        user={user}
-        words={saved.rows.filter(
-          (word) => word.source.includes(source) && word.type.includes(type)
-        )}
-      />
+      {user ? (
+        <LearnWord
+          user={user}
+          words={(await getSaved(0, user?.username, 100)).rows.filter(
+            (word) => word.source.includes(source) && word.type.includes(type)
+          )}
+        />
+      ) : (
+        <p>must be logged in</p>
+      )}
     </main>
   );
 }

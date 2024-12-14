@@ -1,8 +1,4 @@
-import {
-  HTMLInputAutoCompleteAttribute,
-  HTMLInputTypeAttribute,
-  InputHTMLAttributes,
-} from "react";
+import { HTMLInputTypeAttribute, InputHTMLAttributes } from "react";
 import { cn } from "../lib/helpers";
 
 interface InputFieldProps extends InputHTMLAttributes<HTMLInputElement> {
@@ -18,11 +14,9 @@ export default function InputField({
   name = id,
   labelText = id,
   type,
-  autoComplete,
   error,
   errorAsArray = false,
   small = false,
-  className,
   ...props
 }: InputFieldProps) {
   return (

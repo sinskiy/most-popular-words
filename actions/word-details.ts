@@ -4,10 +4,12 @@ import { revalidateTag } from "next/cache";
 import db from "../configs/pg";
 
 export async function setWordDetails(
-  { username, word }: { username: string; word: string },
+  { username, word }: { username: string | false; word: string },
   state: unknown,
   formData: FormData
 ) {
+  if (!username) return { message: "Must be logged in" };
+
   try {
     await db.query(
       `INSERT INTO user_words (username, word, translation, definition, example)

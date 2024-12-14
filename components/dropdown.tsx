@@ -4,14 +4,12 @@ import { cn } from "../lib/helpers";
 interface DropdownProps extends PropsWithChildren, HTMLAttributes<HTMLElement> {
   id: string;
   label?: ReactNode;
-  checkboxClassName?: string;
 }
 
 export default function Dropdown({
   id,
   label = id,
   children,
-  checkboxClassName,
   className,
   ...props
 }: DropdownProps) {

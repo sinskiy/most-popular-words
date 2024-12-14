@@ -11,21 +11,24 @@ export default async function Saved({ searchParams }: PageProps) {
 
   const user = await getUser();
 
-  if (!user) {
-    throw new Error("You must be logged in");
-  }
-
   const offset = (page - 1) * ITEMS_PER_PAGE;
-
-  const saved = await getSaved(offset, user.username);
-
-  const savedCount = await getSavedCount(user.username);
-  const totalPages = getTotalPages(savedCount);
 
   return (
     <main className="flex flex-col gap-4">
-      <Words user={user} list={saved.rows} />
-      <Pagination curr={page} end={totalPages} />
+      {user ? (
+        <>
+          <Words
+            user={user}
+            list={(await getSaved(offset, user.username)).rows}
+          />
+          <Pagination
+            curr={page}
+            end={getTotalPages(await getSavedCount(user.username))}
+          />
+        </>
+      ) : (
+        <p>Must be logged in</p>
+      )}
     </main>
   );
 }

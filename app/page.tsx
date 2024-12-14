@@ -8,6 +8,7 @@ import { getUser } from "../actions/auth";
 import { ITEMS_PER_PAGE } from "../lib/db";
 import Sort from "../components/sort";
 import Filters from "../components/filters";
+import { Suspense } from "react";
 
 const getWords = cacheDb(
   async (
@@ -77,8 +78,10 @@ export default async function Home({ searchParams }: PageProps) {
   return (
     <main className="flex flex-col gap-4">
       <header className="flex gap-2">
-        <Sort />
-        <Filters />
+        <Suspense>
+          <Sort />
+          <Filters />
+        </Suspense>
       </header>
       <Words list={words.rows} user={user} />
       <Pagination curr={page} end={totalPages} />
