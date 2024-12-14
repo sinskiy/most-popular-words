@@ -5,19 +5,20 @@ import Dropdown from "./dropdown";
 import Form from "./form";
 import InputField from "./input-field";
 import { setParams } from "../lib/helpers";
+import { types } from "../types/word";
 
 interface FiltersProps {
   saved?: boolean;
 }
 
-export default function Filters({ saved = false }: FiltersProps) {
+export default function Filters({ saved = true }: FiltersProps) {
   const searchParams = useSearchParams();
   const pathname = usePathname();
   const { replace } = useRouter();
 
   async function handleFilters(formData: FormData) {
     const params = new URLSearchParams(searchParams);
-    const newParams = setParams(params, formData, ["source", "saved"]);
+    const newParams = setParams(params, formData, ["source", "type", "saved"]);
     replace(`${pathname}?${newParams.toString()}`);
   }
 
@@ -27,10 +28,26 @@ export default function Filters({ saved = false }: FiltersProps) {
         <InputField
           type="text"
           id="source"
-          autoComplete=""
           small
           defaultValue={searchParams.get("source") ?? ""}
         />
+        <fieldset>
+          <legend className="text-lg font-semibold mb-1">type</legend>
+          <div>
+            {types.map((type) => (
+              <div key={type} className="flex gap-3 py-1">
+                <input
+                  type="radio"
+                  id={type}
+                  name="type"
+                  value={type}
+                  defaultChecked={searchParams.get("type") === type}
+                />
+                <label htmlFor={type}>{type}</label>
+              </div>
+            ))}
+          </div>
+        </fieldset>
         {saved && (
           <div className="flex gap-2">
             <input

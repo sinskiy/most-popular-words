@@ -6,6 +6,7 @@ interface FormProps
   pending: boolean;
   heading?: string;
   message?: string;
+  label?: string;
 }
 
 export default function Form({
@@ -13,6 +14,7 @@ export default function Form({
   heading,
   children,
   message,
+  label = "submit",
   ...props
 }: FormProps) {
   return (
@@ -25,7 +27,7 @@ export default function Form({
         type="submit"
         className="w-fit px-2 py-1 primary"
       >
-        submit
+        {label}
       </button>
     </form>
   );

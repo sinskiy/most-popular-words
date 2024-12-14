@@ -10,7 +10,10 @@ export interface Word {
 
 export interface SavedWord extends Word {
   source: string;
+  type: string;
   knowledge: (typeof knowledge)[number];
 }
 
 export const knowledge = ["again", "hard", "good", "easy"] as const;
+
+export const types = ["books", "docs", "articles"] as const;

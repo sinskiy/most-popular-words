@@ -14,6 +14,7 @@ const getWords = cacheDb(
     offset: number,
     search: string,
     source: string,
+    type: string,
     sort: string,
     saved: boolean,
     username?: string
@@ -22,11 +23,19 @@ const getWords = cacheDb(
       "Couldn't get words",
       `SELECT value, occurrences, percentage, value in (SELECT word FROM saved WHERE username = $1) AS saved, translation, definition, example
            FROM user_words_with_percentage
-           WHERE value LIKE $2 AND source LIKE $3 AND (value in (SELECT word FROM saved WHERE username = $1) = $4 OR value in (SELECT word FROM saved WHERE username = $1) = true) AND (username = $1 OR username IS NULL)
+           WHERE value LIKE $2 AND source LIKE $3 AND type LIKE $4 AND (value in (SELECT word FROM saved WHERE username = $1) = $5 OR value in (SELECT word FROM saved WHERE username = $1) = true) AND (username = $1 OR username IS NULL)
        ORDER BY ` +
         getWordsSort(sort) +
-        " LIMIT $5 OFFSET $6",
-      [username, `%${search}%`, `%${source}%`, saved, ITEMS_PER_PAGE, offset]
+        " LIMIT $6 OFFSET $7",
+      [
+        username,
+        `%${search}%`,
+        `%${source}%`,
+        type,
+        saved,
+        ITEMS_PER_PAGE,
+        offset,
+      ]
     ),
   ["words"]
 );
@@ -46,6 +55,7 @@ export default async function Home({ searchParams }: PageProps) {
   const search = (params.search ?? "") as string;
   const sort = (params.sort ?? "descending") as string;
   const source = (params.source ?? "") as string;
+  const type = (params.type ?? "%%") as string;
   const saved = Boolean(params.saved ?? false);
 
   const offset = (page - 1) * ITEMS_PER_PAGE;
@@ -56,6 +66,7 @@ export default async function Home({ searchParams }: PageProps) {
     offset,
     search,
     source,
+    type,
     sort,
     saved,
     typeof user !== "boolean" ? user.username : undefined

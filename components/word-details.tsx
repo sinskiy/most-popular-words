@@ -23,9 +23,9 @@ export default function WordDetails({ user, word }: WordDetails) {
 
   return (
     <Dropdown
-      id="word-details"
+      id={`${word.value}-details`}
       label={
-        <label>
+        <label htmlFor={`${word.value}-details-checkbox`}>
           <img src="/details.svg" alt="" />
         </label>
       }

@@ -12,6 +12,7 @@ export default async function Learn({ searchParams }: PageProps) {
 
   const params = await searchParams;
   const source = (params.source ?? "") as string;
+  const type = (params.type ?? "") as string;
 
   return (
     <main className="flex flex-col gap-8">
@@ -20,7 +21,9 @@ export default async function Learn({ searchParams }: PageProps) {
       </nav>
       <LearnWord
         user={user}
-        words={saved.rows.filter((word) => word.source.includes(source))}
+        words={saved.rows.filter(
+          (word) => word.source.includes(source) && word.type.includes(type)
+        )}
       />
     </main>
   );

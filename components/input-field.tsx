@@ -8,7 +8,6 @@ import { cn } from "../lib/helpers";
 interface InputFieldProps extends InputHTMLAttributes<HTMLInputElement> {
   labelText?: string;
   type: HTMLInputTypeAttribute;
-  autoComplete: HTMLInputAutoCompleteAttribute;
   error?: string | string[];
   errorAsArray?: boolean;
   small?: boolean;
@@ -36,7 +35,6 @@ export default function InputField({
           id={id}
           name={name}
           type={type}
-          autoComplete={autoComplete}
           {...props}
           className={cn([
             "outline-none neutral p-2 focus:primary",

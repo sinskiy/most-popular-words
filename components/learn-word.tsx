@@ -32,6 +32,10 @@ function getFilteredWords(words: SavedWord[], prevWord: string | false) {
 export default function LearnWord({ user, words }: LearnWordProps) {
   const [localWords, setLocalWords] = useState(words);
 
+  useEffect(() => {
+    setLocalWords(words);
+  }, [words]);
+
   const [prevWord, setPrevWord] = useState<string | false>(false);
 
   const filteredWords = getFilteredWords(localWords, prevWord);
@@ -43,6 +47,8 @@ export default function LearnWord({ user, words }: LearnWordProps) {
 
   function handleNext(knowledgeValue: (typeof knowledge)[number]) {
     if (randomWordIndex === false) return;
+
+    setShowAnswers(false);
 
     const newPrevWord = filteredWords[randomWordIndex].value;
     setPrevWord(newPrevWord);
@@ -133,7 +139,12 @@ export default function LearnWord({ user, words }: LearnWordProps) {
           ))}
         </div>
       </nav>
-      <Form action={action} pending={pending} message={state?.message}></Form>
+      <Form
+        action={action}
+        pending={pending}
+        message={state?.message}
+        label="submit and exit"
+      ></Form>
     </main>
   );
 }

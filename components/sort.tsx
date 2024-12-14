@@ -17,7 +17,7 @@ export default function Sort() {
 
   return (
     <Dropdown
-      label="sort"
+      id="sort"
       onChange={(e) => handleSort((e.target as HTMLInputElement).id)}
     >
       {OPTIONS.map((option, i) => (
