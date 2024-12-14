@@ -7,7 +7,7 @@ import jwt, { JwtPayload } from "jsonwebtoken";
 import { cookies } from "next/headers";
 import { User } from "../types/user";
 import { getErrorMessage } from "../lib/helpers";
-import { unstable_cache } from "next/cache";
+import { revalidateTag, unstable_cache } from "next/cache";
 
 type AuthFormState = FormState<{
   username?: string[];
@@ -105,6 +105,8 @@ export async function logIn(
   } catch (e) {
     return getErrorMessage(e);
   }
+
+  revalidateTag("user");
 
   redirect("/");
 }
