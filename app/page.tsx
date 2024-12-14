@@ -26,8 +26,6 @@ const getWords = cacheDb(
       [username, `%${search}%`, `%${source}%`, saved, ITEMS_PER_PAGE, offset]
     ),
   ["words"]
-  // true -> saved = true AND saved = true
-  // false -> saved = false AND saved = true
 );
 
 const getWordsCount = cacheDb(
