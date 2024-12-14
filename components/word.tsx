@@ -3,6 +3,7 @@ import db from "../configs/pg";
 import { User } from "../types/user";
 import { type Word } from "../types/word";
 import Save from "./save";
+import WordDetails from "./word-details";
 
 interface WordProps {
   user: false | User;
@@ -45,6 +46,7 @@ export default async function Word({ user, rank, word }: WordProps) {
       </p>
       <div className="flex gap-8">
         <Save user={user} word={word} saveAction={handleSave} />
+        <WordDetails user={user} word={word} />
         <p className="flex gap-2">
           <span className="font-bold">{word.occurrences}</span> occurrence
           {word.occurrences !== 1 && "s"}

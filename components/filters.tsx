@@ -18,7 +18,7 @@ export default function Filters() {
   }
 
   return (
-    <Dropdown label="filters">
+    <Dropdown id="filters">
       <Form pending={false} action={handleFilters}>
         <InputField
           type="text"
