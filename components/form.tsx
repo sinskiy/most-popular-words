@@ -22,11 +22,7 @@ export default function Form({
       {heading && <h2 className="text-2xl font-bold">{heading}</h2>}
       {message && <p>{message}</p>}
       <div className="flex flex-col gap-2">{children}</div>
-      <button
-        disabled={pending}
-        type="submit"
-        className="w-fit px-2 py-1 primary"
-      >
+      <button disabled={pending} type="submit" className="button">
         {label}
       </button>
     </form>

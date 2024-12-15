@@ -116,16 +116,17 @@ export default function LearnWord({ user, words }: LearnWordProps) {
       )}
       <nav>
         <button
-          className="primary w-fit px-2 py-1"
+          className="button"
           onClick={() => setShowAnswers(true)}
+          disabled={showAnswers}
         >
           show answers
         </button>
         <div className="flex gap-1 mt-2">
-          {knowledge.map((value) => (
+          {knowledge.map((value, i) => (
             <button
               key={value}
-              className="primary w-fit px-2 py-1"
+              className={cn(["button", knowledgeClasses[i]])}
               onClick={() => handleNext(value)}
               disabled={randomWordIndex === false || localWords.length === 0}
             >
@@ -138,8 +139,10 @@ export default function LearnWord({ user, words }: LearnWordProps) {
         action={action}
         pending={pending}
         message={state?.message}
-        label="submit and exit"
+        label="save and exit"
       ></Form>
     </main>
   );
 }
+
+const knowledgeClasses = ["error", "tertiary", "primary", "success"];

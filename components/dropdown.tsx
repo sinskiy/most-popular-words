@@ -24,7 +24,7 @@ export default function Dropdown({
       {typeof label === "string" ? (
         <label
           htmlFor={`${id}-checkbox`}
-          className="primary pl-2 pr-4 py-1 flex w-fit gap-1"
+          className="neutral pl-2 pr-4 py-1 flex w-fit gap-1 outline-slate-300 peer-focus-visible:outline peer-focus-visible:outline-1"
         >
           <img src="/dropdown.svg" alt="" />
           {label}
@@ -34,7 +34,7 @@ export default function Dropdown({
       )}
       <div
         className={cn([
-          "absolute primary px-4 py-2 min-w-48 hidden peer-checked:block z-10",
+          "absolute neutral px-4 py-2 mt-1 min-w-48 hidden peer-checked:block z-10",
           className,
         ])}
         {...props}

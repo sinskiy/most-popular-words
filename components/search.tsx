@@ -15,7 +15,7 @@ export default function Search() {
   }
 
   return (
-    <div className="primary min-w-0 w-48 flex px-2 gap-2 py-1 outline-yellow-500 focus-within:outline">
+    <div className="neutral min-w-0 w-48 flex px-2 gap-2 py-1 focus-within:primary">
       <label htmlFor="search" className="sr-only">
         search
       </label>

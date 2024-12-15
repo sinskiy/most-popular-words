@@ -24,7 +24,7 @@ export default function Filters({ saved = true }: FiltersProps) {
 
   return (
     <Dropdown id="filters">
-      <Form pending={false} action={handleFilters}>
+      <Form pending={false} action={handleFilters} heading="Filters">
         <InputField
           type="text"
           id="source"
@@ -32,10 +32,10 @@ export default function Filters({ saved = true }: FiltersProps) {
           defaultValue={searchParams.get("source") ?? ""}
         />
         <fieldset>
-          <legend className="text-lg font-semibold mb-1">type</legend>
+          <legend className="text-lg font-semibold mb-0.5">type</legend>
           <div>
             {types.map((type) => (
-              <div key={type} className="flex gap-3 py-1">
+              <div key={type} className="flex gap-3">
                 <input
                   type="radio"
                   id={type}

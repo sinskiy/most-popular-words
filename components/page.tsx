@@ -16,7 +16,7 @@ export default function Page({ page, curr }: PageProps) {
     <Link
       href={`?${searchParams.toString()}`}
       className={`${PAGE_CLASSES} relative ${
-        page === curr ? "primary" : "neutral"
+        page === curr ? "primary disabled" : "neutral"
       }`}
     >
       {page}

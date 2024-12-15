@@ -3,6 +3,7 @@ import { getUser, logOut } from "../actions/auth";
 import Search from "./search";
 import { cn } from "../lib/helpers";
 import { Suspense } from "react";
+import HeaderLink from "./header-link";
 
 export default async function Header() {
   const user = await getUser();
@@ -28,14 +29,16 @@ export default async function Header() {
               <img src="/streak.svg" alt="" />
               <p className="text-yellow-500">{user.streak}</p>
             </div>
-            <Link href="/learn">learn</Link>
-            <Link href="/saved">saved</Link>
-            <button onClick={logOut}>log out</button>
+            <HeaderLink href="/learn">learn</HeaderLink>
+            <HeaderLink href="/saved">saved</HeaderLink>
+            <button onClick={logOut} className="button">
+              log out
+            </button>
           </>
         ) : (
           <>
-            <Link href="/log-in">log in</Link>
-            <Link href="/sign-up" className="primary p-1">
+            <HeaderLink href="/log-in">log in</HeaderLink>
+            <Link href="/sign-up" className="primary button">
               sign up
             </Link>
           </>

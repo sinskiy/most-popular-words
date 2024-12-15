@@ -13,7 +13,7 @@ export const PAGE_CLASSES =
 export default function Pagination({ curr, end }: PaginationProps) {
   const { prev, pages, next } = getPages(curr, end);
   return (
-    <div className="flex gap-2 justify-center">
+    <div className="flex gap-2 justify-center mt-2">
       {prev && <ManageCurrPage page={curr - 1}>&lt;&lt;</ManageCurrPage>}
       {pages.map((page) => (
         <Page curr={curr} page={page} key={page} />
