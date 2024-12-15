@@ -13,6 +13,8 @@ export const metadata: Metadata = {
     type: "website",
     title: TITLE,
     description: DESCRIPTION,
+    siteName: TITLE,
+    url: "https://words.sinskiy.website",
   },
   twitter: {
     card: "summary_large_image",
