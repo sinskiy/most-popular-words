@@ -30,8 +30,8 @@ export default async function Word({ user, rank, word }: WordProps) {
     revalidateTag("words");
   }
   return (
-    <li
-      className={`w-full px-12 py-4 flex items-center ${
+    <tr
+      className={`w-full px-12 max-md:px-6 py-4 flex gap-4 items-center ${
         rank === 1
           ? "primary"
           : rank === 2
@@ -41,23 +41,26 @@ export default async function Word({ user, rank, word }: WordProps) {
           : "neutral"
       }`}
     >
-      <p className="flex-1 flex gap-8 items-center">
-        {rank}. <span className="text-4xl font-medium">{word.value}</span>
-      </p>
-      <div className="flex gap-8">
+      <th className="w-8 text-start max-md:hidden" scope="row">
+        {rank}.
+      </th>
+      <td className="text-4xl font-medium flex-1 max-w-xl">{word.value}</td>
+      <td>
         <Save user={user} word={word} saveAction={handleSave} />
+      </td>
+      <td>
         <WordDetails user={user} word={word} />
-        <p className="flex gap-2">
-          <span className="font-bold">{word.occurrences}</span> occurrence
+      </td>
+      <td>
+        <span className="font-bold">{word.occurrences} </span>
+        <span className="max-md:hidden">
+          occurrence
           {word.occurrences !== 1 && "s"}
-        </p>
-        <p className="flex gap-2">
-          <span className="font-bold">
-            {(word.percentage * 100).toFixed(2)}
-          </span>
-          %
-        </p>
-      </div>
-    </li>
+        </span>
+      </td>
+      <td>
+        <span className="font-bold">{(word.percentage * 100).toFixed(2)}</span>%
+      </td>
+    </tr>
   );
 }

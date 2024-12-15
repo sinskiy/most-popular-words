@@ -6,16 +6,43 @@ import { Suspense } from "react";
 import HeaderLink from "./header-link";
 
 export default async function Header() {
-  const user = await getUser();
+  //
   return (
     <header className="flex justify-between">
-      <Link href="/" className="text-2xl font-medium">
-        most popular words in _______
+      <Link href="/" className="text-xl font-medium text-nowrap">
+        <span className="max-md:hidden">most popular </span>
+        words in _______
       </Link>
       <Suspense>
         <Search />
       </Suspense>
-      <nav className="flex gap-4 items-center">
+      <Menu />
+    </header>
+  );
+}
+
+async function Menu() {
+  const user = await getUser();
+
+  return (
+    <>
+      <div className="peer relative z-20 md:hidden">
+        <input
+          type="checkbox"
+          name="menu"
+          id="menu"
+          className="peer absolute z-30 size-full opacity-0"
+        />
+        <label
+          htmlFor="menu"
+          aria-label="menu"
+          className="block outline-white peer-focus-visible:outline peer-focus-visible:outline-1"
+        >
+          <img src="/menu.svg" alt="" />
+        </label>
+      </div>
+      <nav className="flex gap-4 items-center max-md:fixed max-md:right-0 max-md:top-12 max-md:px-8 max-md:py-9 max-md:translate-x-full max-md:flex-col max-md:primary max-md:peer-has-[:checked]:translate-x-0 max-md:peer-has-[:checked]:shadow-2xl">
+        {/* imitate hamburger menu inside of nav */}
         {user ? (
           <>
             <div
@@ -44,6 +71,6 @@ export default async function Header() {
           </>
         )}
       </nav>
-    </header>
+    </>
   );
 }

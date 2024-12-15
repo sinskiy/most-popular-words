@@ -28,7 +28,10 @@ export default function WordDetails({ user, word }: WordDetails) {
     <Dropdown
       id={`${word.value}-details`}
       label={
-        <label htmlFor={`${word.value}-details-checkbox`}>
+        <label
+          htmlFor={`${word.value}-details-checkbox`}
+          className="block outline-slate-300 peer-focus-visible:outline peer-focus-visible:outline-1"
+        >
           <img src="/details.svg" alt="" />
         </label>
       }
