@@ -3,8 +3,7 @@ import "./globals.css";
 import Header from "../components/header";
 
 const TITLE = "Most popular words in _____";
-const DESCRIPTION =
-  "Look at the most popular words in any language, save and learn them";
+const DESCRIPTION = "View and learn words";
 
 export const metadata: Metadata = {
   title: TITLE,
