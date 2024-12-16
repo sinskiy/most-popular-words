@@ -3,15 +3,20 @@
 import { usePathname, useRouter, useSearchParams } from "next/navigation";
 import { setParams } from "../lib/helpers";
 
+let timer: NodeJS.Timeout;
+
 export default function Search() {
   const searchParams = useSearchParams();
   const pathname = usePathname();
   const { replace } = useRouter();
 
   function handleSearch(search: string) {
-    const params = new URLSearchParams(searchParams);
-    const newParams = setParams(params, search, ["search"]);
-    replace(`${pathname}?${newParams.toString()}`);
+    clearTimeout(timer);
+    timer = setTimeout(() => {
+      const params = new URLSearchParams(searchParams);
+      const newParams = setParams(params, search, ["search"]);
+      replace(`${pathname}?${newParams.toString()}`);
+    }, 1000);
   }
 
   return (
