@@ -95,6 +95,11 @@ export default async function Home({ searchParams }: PageProps) {
           <Filters />
         </Suspense>
       </header>
+      {user === false && (
+        <div className="neutral px-12 max-md:px-6 py-4 font-medium">
+          tip: sign up or log in to save and learn words
+        </div>
+      )}
       <Words list={words.rows} user={user} />
       <Pagination curr={page} end={totalPages} />
     </main>
