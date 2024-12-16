@@ -15,7 +15,7 @@ export default function Search() {
   }
 
   return (
-    <div className="neutral min-w-0 w-48 flex px-2 gap-2 py-1 focus-within:primary">
+    <div className="neutral min-w-0 w-44 flex px-2 gap-2 py-1 focus-within:primary">
       <label htmlFor="search" className="sr-only">
         search
       </label>
@@ -25,7 +25,7 @@ export default function Search() {
         id="search"
         name="search"
         onChange={(e) => handleSearch(e.target.value)}
-        className="bg-transparent outline-none"
+        className="bg-transparent outline-none min-w-0"
         placeholder="search"
         defaultValue={searchParams.get("search") ?? ""}
       />
