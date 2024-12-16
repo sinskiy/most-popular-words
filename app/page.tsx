@@ -42,11 +42,17 @@ const getWords = cacheDb(
 );
 
 const getWordsCount = cacheDb(
-  async (search: string) =>
+  async (
+    search: string,
+    source: String,
+    type: string,
+    saved: boolean,
+    username?: string
+  ) =>
     await queryThrowError<{ count: number }>(
       "Couldn't get words count",
-      "SELECT COUNT(*) FROM words WHERE value LIKE $1",
-      [`%${search}%`]
+      "SELECT COUNT(*) FROM words WHERE value LIKE $1 AND source LIKE $2 AND type = $3 AND (value in (SELECT word FROM saved WHERE username = $4) = $5 OR value in (SELECT word FROM saved WHERE username = $4) = true)",
+      [`%${search}%`, `%${source}%`, type, username, saved]
     )
 );
 
@@ -72,7 +78,13 @@ export default async function Home({ searchParams }: PageProps) {
     saved,
     typeof user !== "boolean" ? user.username : undefined
   );
-  const wordsCount = await getWordsCount(search);
+  const wordsCount = await getWordsCount(
+    search,
+    source,
+    type,
+    saved,
+    typeof user !== "boolean" ? user.username : undefined
+  );
   const totalPages = Math.ceil(wordsCount.rows[0].count / ITEMS_PER_PAGE);
 
   return (
