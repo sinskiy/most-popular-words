@@ -88,7 +88,7 @@ export default async function Home({ searchParams }: PageProps) {
   const totalPages = Math.ceil(wordsCount.rows[0].count / ITEMS_PER_PAGE);
 
   return (
-    <main className="flex flex-col gap-2">
+    <main className="flex flex-col gap-6">
       <header className="flex gap-2">
         <Suspense>
           <Sort />

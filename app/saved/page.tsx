@@ -14,7 +14,7 @@ export default async function Saved({ searchParams }: PageProps) {
   const offset = (page - 1) * ITEMS_PER_PAGE;
 
   return (
-    <main className="flex flex-col gap-4">
+    <main className="flex flex-col gap-2">
       {user ? (
         <>
           <Words
