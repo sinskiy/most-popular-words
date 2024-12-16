@@ -52,8 +52,19 @@ function formatText(text: string) {
   const formatted = text
     .toLowerCase()
     .replace(/[^a-z\s\'-]|_/g, " ")
-    .replace(/(-+|\'+)\s+|\s+(-+|\')/g, " ")
-    .replace(/\s+/g, " ")
-    .trim();
-  return formatted;
+    .replace(/(-+|\'+)\s+|\s+(-+|\')/g, " ");
+
+  const fullForm = formatted
+    .replace(/\bi'm\b/g, "i am")
+    .replace(/\b(\w+)'re\b/g, "$1 are")
+    .replace(/\b(\w+)'ll\b/g, "$1 will")
+    .replace(/\b(\w+)'ve\b/g, "$1 have")
+    .replace(/\bcan't\b/g, "can not")
+    .replace(/\bwon't\b/g, "will not")
+    .replace(/\b(\w+)n't\b/g, "$1 not")
+    .replace(/\blet's\b/g, "let us");
+
+  const postFormatted = fullForm.replace(/\s+/g, " ").trim();
+
+  return postFormatted;
 }

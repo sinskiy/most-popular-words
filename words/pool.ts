@@ -3,7 +3,7 @@ import { countWordsInDirectory } from "./count-words.ts";
 import { addWords } from "./db-words.ts";
 import db from "../configs/pg.ts";
 
-createDb();
+addWordsFromAllDirectories(true);
 
 async function addWordsFromAllDirectories(
   deleteWords = false,
