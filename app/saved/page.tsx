@@ -1,6 +1,6 @@
 import { getUser } from "../../actions/auth";
 import { getSaved, getSavedCount } from "../../actions/saved";
-import Pagination from "../../components/pagination";
+import Pagination from "../../ui/pagination";
 import Words from "../../components/words";
 import { getTotalPages, ITEMS_PER_PAGE } from "../../lib/db";
 import { PageProps } from "../../types/page";

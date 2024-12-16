@@ -1,9 +1,9 @@
 "use client";
 
 import { usePathname, useRouter, useSearchParams } from "next/navigation";
-import Dropdown from "./dropdown";
-import Form from "./form";
-import InputField from "./input-field";
+import Dropdown from "../ui/dropdown";
+import Form from "../ui/form";
+import InputField from "../ui/input-field";
 import { setParams } from "../lib/helpers";
 import { types } from "../types/word";
 

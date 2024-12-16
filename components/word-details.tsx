@@ -4,9 +4,9 @@ import { useActionState } from "react";
 import { setWordDetails } from "../actions/word-details";
 import { User } from "../types/user";
 import { Word } from "../types/word";
-import Dropdown from "./dropdown";
-import Form from "./form";
-import InputField from "./input-field";
+import Dropdown from "../ui/dropdown";
+import Form from "../ui/form";
+import InputField from "../ui/input-field";
 
 interface WordDetails {
   user: User | false;

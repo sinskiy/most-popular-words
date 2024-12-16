@@ -3,9 +3,9 @@
 import { Fragment, useActionState, useEffect, useState } from "react";
 import { knowledge, SavedWord } from "../types/word";
 import { cn, getRandomIndex } from "../lib/helpers";
-import InputField from "./input-field";
+import InputField from "../ui/input-field";
 import { updateKnowledge } from "../actions/update-knowledge";
-import Form from "./form";
+import Form from "../ui/form";
 import { User } from "../types/user";
 
 interface LearnWordProps {

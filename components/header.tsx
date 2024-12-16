@@ -3,7 +3,7 @@ import { getUser, logOut } from "../actions/auth";
 import Search from "./search";
 import { cn } from "../lib/helpers";
 import { Suspense } from "react";
-import HeaderLink from "./header-link";
+import HeaderLink from "../ui/header-link";
 import LanguagePicker from "./language-picker";
 
 export default async function Header() {

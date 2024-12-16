@@ -1,7 +1,7 @@
 "use client";
 
-import Form from "../../components/form";
-import InputField from "../../components/input-field";
+import Form from "../../ui/form";
+import InputField from "../../ui/input-field";
 import { logIn } from "../../actions/auth";
 import { useActionState } from "react";
 

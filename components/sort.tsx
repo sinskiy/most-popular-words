@@ -1,7 +1,7 @@
 "use client";
 
 import { usePathname, useRouter, useSearchParams } from "next/navigation";
-import Dropdown from "./dropdown";
+import Dropdown from "../ui/dropdown";
 
 const OPTIONS = ["descending", "ascending", "alphabetical"];
 

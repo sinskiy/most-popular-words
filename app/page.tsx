@@ -1,4 +1,4 @@
-import Pagination from "../components/pagination";
+import Pagination from "../ui/pagination";
 import Words from "../components/words";
 import { DEFAULT_LANGUAGE, DEFAULT_SORT, Word } from "../types/word";
 import { PageProps } from "../types/page";
