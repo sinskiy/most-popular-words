@@ -4,6 +4,7 @@ import { cn } from "../lib/helpers";
 interface DropdownProps extends PropsWithChildren, HTMLAttributes<HTMLElement> {
   id: string;
   label?: ReactNode;
+  labelClassName?: string;
 }
 
 export default function Dropdown({
@@ -11,6 +12,7 @@ export default function Dropdown({
   label = id,
   children,
   className,
+  labelClassName,
   ...props
 }: DropdownProps) {
   return (
@@ -24,7 +26,10 @@ export default function Dropdown({
       {typeof label === "string" ? (
         <label
           htmlFor={`${id}-checkbox`}
-          className="neutral pl-2 pr-4 py-1 flex w-fit gap-1 outline-slate-300 peer-focus-visible:outline peer-focus-visible:outline-1"
+          className={cn([
+            "neutral pl-2 pr-4 py-1 flex w-fit gap-1 outline-slate-300 peer-focus-visible:outline peer-focus-visible:outline-1",
+            labelClassName,
+          ])}
         >
           <img src="/dropdown.svg" alt="" />
           {label}

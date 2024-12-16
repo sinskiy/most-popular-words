@@ -4,15 +4,18 @@ import Search from "./search";
 import { cn } from "../lib/helpers";
 import { Suspense } from "react";
 import HeaderLink from "./header-link";
+import LanguagePicker from "./language-picker";
 
 export default async function Header() {
-  //
   return (
     <header className="flex justify-between">
-      <Link href="/" className="text-xl font-medium text-nowrap">
-        <span className="max-md:hidden">most popular </span>
-        words in _______
-      </Link>
+      <div className="text-xl font-medium text-nowrap flex gap-2 items-center">
+        <Link href="/">
+          <span className="max-md:hidden">most popular </span>
+          words in
+        </Link>
+        <LanguagePicker />
+      </div>
       <Suspense>
         <Search />
       </Suspense>

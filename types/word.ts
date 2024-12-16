@@ -17,3 +17,8 @@ export interface SavedWord extends Word {
 export const knowledge = ["again", "hard", "good", "easy"] as const;
 
 export const types = ["books", "docs", "articles"] as const;
+
+export const languages = ["english", "russian"] as const;
+
+export const DEFAULT_SORT = "descending";
+export const DEFAULT_LANGUAGE = "english";

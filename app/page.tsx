@@ -1,6 +1,6 @@
 import Pagination from "../components/pagination";
 import Words from "../components/words";
-import { Word } from "../types/word";
+import { DEFAULT_LANGUAGE, DEFAULT_SORT, Word } from "../types/word";
 import { PageProps } from "../types/page";
 import queryThrowError from "../lib/query-throw-error";
 import cacheDb from "../lib/cache-db";
@@ -16,6 +16,7 @@ const getWords = cacheDb(
     search: string,
     source: string,
     type: string,
+    language: string,
     sort: string,
     saved: boolean,
     username?: string
@@ -24,15 +25,16 @@ const getWords = cacheDb(
       "Couldn't get words",
       `SELECT value, occurrences, percentage, value in (SELECT word FROM saved WHERE username = $1) AS saved, translation, definition, example
            FROM user_words_with_percentage
-           WHERE value LIKE $2 AND source LIKE $3 AND type LIKE $4 AND (value in (SELECT word FROM saved WHERE username = $1) = $5 OR value in (SELECT word FROM saved WHERE username = $1) = true) AND (username = $1 OR username IS NULL)
+           WHERE value LIKE $2 AND source LIKE $3 AND type LIKE $4 AND language = $5 AND (value in (SELECT word FROM saved WHERE username = $1) = $6 OR value in (SELECT word FROM saved WHERE username = $1) = true) AND (username = $1 OR username IS NULL)
        ORDER BY ` +
         getWordsSort(sort) +
-        " LIMIT $6 OFFSET $7",
+        " LIMIT $7 OFFSET $8",
       [
         username,
         `%${search}%`,
         `%${source}%`,
         type,
+        language,
         saved,
         ITEMS_PER_PAGE,
         offset,
@@ -46,13 +48,14 @@ const getWordsCount = cacheDb(
     search: string,
     source: String,
     type: string,
+    language: string,
     saved: boolean,
     username?: string
   ) =>
     await queryThrowError<{ count: number }>(
       "Couldn't get words count",
-      "SELECT COUNT(*) FROM words WHERE value LIKE $1 AND source LIKE $2 AND type = $3 AND (value in (SELECT word FROM saved WHERE username = $4) = $5 OR value in (SELECT word FROM saved WHERE username = $4) = true)",
-      [`%${search}%`, `%${source}%`, type, username, saved]
+      "SELECT COUNT(*) FROM words WHERE value LIKE $1 AND source LIKE $2 AND type LIKE $3 AND language = $4 AND (value in (SELECT word FROM saved WHERE username = $5) = $6 OR value in (SELECT word FROM saved WHERE username = $5) = true)",
+      [`%${search}%`, `%${source}%`, type, language, username, saved]
     )
 );
 
@@ -60,7 +63,8 @@ export default async function Home({ searchParams }: PageProps) {
   const params = await searchParams;
   const page = Number(params.page || 1);
   const search = (params.search ?? "") as string;
-  const sort = (params.sort ?? "descending") as string;
+  const sort = (params.sort ?? DEFAULT_SORT) as string;
+  const language = (params.language ?? DEFAULT_LANGUAGE) as string;
   const source = (params.source ?? "") as string;
   const type = (params.type ?? "%%") as string;
   const saved = Boolean(params.saved ?? false);
@@ -74,6 +78,7 @@ export default async function Home({ searchParams }: PageProps) {
     search,
     source,
     type,
+    language,
     sort,
     saved,
     typeof user !== "boolean" ? user.username : undefined
@@ -82,6 +87,7 @@ export default async function Home({ searchParams }: PageProps) {
     search,
     source,
     type,
+    language,
     saved,
     typeof user !== "boolean" ? user.username : undefined
   );
