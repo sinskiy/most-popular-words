@@ -30,12 +30,12 @@ export default function WordDetails({ user, word }: WordDetails) {
       label={
         <label
           htmlFor={`${word.value}-details-checkbox`}
-          className="flex justify-center outline-slate-300 peer-focus-visible:outline peer-focus-visible:outline-1"
+          className="min-w-5 flex justify-center outline-slate-300 peer-focus-visible:outline peer-focus-visible:outline-1"
         >
           <img width={20} height={20} src="/details.svg" alt="" />
         </label>
       }
-      className="!p-4"
+      className="!p-4 right-0"
     >
       <Form
         pending={pending}

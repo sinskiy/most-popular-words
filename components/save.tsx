@@ -17,7 +17,7 @@ export default function Save({ user, word }: SaveProps) {
   );
 
   return (
-    <form action={action}>
+    <form action={action} className="min-w-5 grid place-items-center">
       {user !== false && (
         <button type="submit" aria-label="save" title="save" disabled={pending}>
           <img
