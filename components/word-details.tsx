@@ -30,9 +30,9 @@ export default function WordDetails({ user, word }: WordDetails) {
       label={
         <label
           htmlFor={`${word.value}-details-checkbox`}
-          className="block outline-slate-300 peer-focus-visible:outline peer-focus-visible:outline-1"
+          className="flex justify-center outline-slate-300 peer-focus-visible:outline peer-focus-visible:outline-1"
         >
-          <img src="/details.svg" alt="" />
+          <img width={20} height={20} src="/details.svg" alt="" />
         </label>
       }
       className="!p-4"
