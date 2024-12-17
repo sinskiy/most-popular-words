@@ -14,7 +14,7 @@ export default async function Word({ user, rank, word }: WordProps) {
   return (
     <li
       className={cn([
-        "w-full px-4 md:px-12 py-4 flex gap-4 items-center whitespace-break-spaces",
+        "w-full px-4 md:pl-12 md:pr-8 py-4 flex gap-4 items-center whitespace-break-spaces",
         rank === 1
           ? "primary"
           : rank === 2
@@ -39,8 +39,12 @@ export default async function Word({ user, rank, word }: WordProps) {
         </span>
         %
       </p>
-      <Save user={user} word={word} />
-      <WordDetails user={user} word={word} />
+      {user && (
+        <>
+          <Save user={user} word={word} />
+          <WordDetails user={user} word={word} />
+        </>
+      )}
     </li>
   );
 }
