@@ -14,7 +14,9 @@ export default async function Header() {
           <span className="max-md:hidden">most popular </span>
           words in
         </Link>
-        <LanguagePicker />
+        <Suspense>
+          <LanguagePicker />
+        </Suspense>
       </div>
       <Suspense>
         <Search />

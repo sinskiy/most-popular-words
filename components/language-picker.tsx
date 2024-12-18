@@ -3,7 +3,6 @@
 import { usePathname, useRouter, useSearchParams } from "next/navigation";
 import Dropdown from "../ui/dropdown";
 import { DEFAULT_LANGUAGE, languages } from "../types/word";
-import { cn } from "../lib/helpers";
 
 export default function LanguagePicker() {
   const searchParams = useSearchParams();

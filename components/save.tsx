@@ -11,7 +11,7 @@ interface SaveProps {
 }
 
 export default function Save({ user, word }: SaveProps) {
-  const [state, action, pending] = useActionState(
+  const [, action, pending] = useActionState(
     save.bind(null, { user: user, word: word }),
     undefined
   );

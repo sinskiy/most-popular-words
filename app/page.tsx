@@ -46,7 +46,7 @@ const getWords = cacheDb(
 const getWordsCount = cacheDb(
   async (
     search: string,
-    source: String,
+    source: string,
     type: string,
     language: string,
     saved: boolean,
