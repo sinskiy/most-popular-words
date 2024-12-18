@@ -37,8 +37,10 @@ async function createDb() {
       last_streak TIMESTAMP NOT NULL DEFAULT '1970-01-01 00:00:01'::timestamp
     )`);
 
+  await db.query(`CREATE TYPE languages AS ENUM ('english', 'russian')`);
   await db.query(`CREATE TABLE words (
       value VARCHAR(255),
+      language languages NOT NULL DEFAULT 'english',
       source VARCHAR(255) NOT NULL,
       occurrences INT NOT NULL,
       type VARCHAR(30) NOT NULL DEFAULT 'books' CHECK(type in ('books', 'docs', 'articles')),
@@ -62,7 +64,7 @@ async function createDb() {
     )`);
 
   await db.query(
-    `CREATE VIEW user_words_with_percentage AS SELECT value, occurrences, source, type, translation, definition, example, knowledge, username, occurrences::REAL / (SELECT SUM(occurrences) FROM words) AS percentage FROM words FULL OUTER JOIN user_words ON words.value = user_words.word`
+    `CREATE VIEW user_words_with_percentage AS SELECT value, occurrences, source, type, translation, definition, example, knowledge, username, language, occurrences::REAL / (SELECT SUM(occurrences) FROM words) AS percentage FROM words FULL OUTER JOIN user_words ON words.value = user_words.word`
   );
 
   await addWordsFromAllDirectories(false);
