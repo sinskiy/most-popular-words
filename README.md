@@ -1,12 +1,16 @@
 # most popular words in \_\_\_\_\_\_\_
 
-View and learn words at [words.sinskiy.website](https://words.sinskiy.website/)
+View, define and learn words at [words.sinskiy.website](https://words.sinskiy.website/)
+
+## Counting words
+
+I use a simple function (that is obviously not perfect). Look at `words/count-words.ts`
 
 ## Features
 
 - sign up with username and password, log in
-- view most popular words (currently only in english); sort, filter and search them
-- save words; add translations, definitions and examples to them
+- view most popular words for a chosen language; sort, filter and search them
+- save words; add translations, definitions and examples to words
 - learn words (anki-like)
 
 ## Built with
