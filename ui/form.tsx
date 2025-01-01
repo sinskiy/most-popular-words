@@ -1,4 +1,4 @@
-import { FormHTMLAttributes, PropsWithChildren } from "react";
+import { FormHTMLAttributes, PropsWithChildren, ReactNode } from "react";
 
 interface FormProps
   extends FormHTMLAttributes<HTMLFormElement>,
@@ -7,6 +7,7 @@ interface FormProps
   heading?: string;
   message?: string;
   label?: string;
+  nav?: ReactNode;
 }
 
 export default function Form({
@@ -15,6 +16,7 @@ export default function Form({
   children,
   message,
   label = "submit",
+  nav,
   ...props
 }: FormProps) {
   return (
@@ -22,9 +24,12 @@ export default function Form({
       {heading && <h2 className="text-2xl font-bold">{heading}</h2>}
       {message && <p>{message}</p>}
       <div className="flex flex-col gap-2">{children}</div>
-      <button disabled={pending} type="submit" className="button">
-        {label}
-      </button>
+      <nav className="flex gap-2">
+        <button disabled={pending} type="submit" className="button">
+          {label}
+        </button>
+        {nav}
+      </nav>
     </form>
   );
 }
