@@ -5,13 +5,15 @@ import Dropdown from "../ui/dropdown";
 import Form from "../ui/form";
 import InputField from "../ui/input-field";
 import { setParams } from "../lib/helpers";
-import { types } from "../types/word";
+import { knowledge, types } from "../types/word";
+import { User } from "../types/user";
 
 interface FiltersProps {
   saved?: boolean;
+  user?: User | false;
 }
 
-export default function Filters({ saved = true }: FiltersProps) {
+export default function Filters({ saved = true, user }: FiltersProps) {
   const searchParams = useSearchParams();
   const pathname = usePathname();
   const { replace } = useRouter();
@@ -48,6 +50,25 @@ export default function Filters({ saved = true }: FiltersProps) {
             ))}
           </div>
         </fieldset>
+        {user && (
+          <fieldset>
+            <legend className="text-lg font-semibold mb-0.5">knowledge</legend>
+            {knowledge.map((knowledgeType) => (
+              <div key={knowledgeType} className="flex gap-3">
+                <input
+                  type="radio"
+                  id={knowledgeType}
+                  name="knowledge-type"
+                  value={knowledgeType}
+                  defaultChecked={
+                    searchParams.get("knowledge") === knowledgeType
+                  }
+                />
+                <label htmlFor={knowledgeType}>{knowledgeType}</label>
+              </div>
+            ))}
+          </fieldset>
+        )}
         {saved && (
           <div className="flex gap-2">
             <input

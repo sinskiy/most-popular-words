@@ -98,7 +98,7 @@ export default async function Home({ searchParams }: PageProps) {
       <header className="flex gap-2">
         <Suspense>
           <Sort />
-          <Filters />
+          <Filters user={user} />
         </Suspense>
       </header>
       {user === false && (
