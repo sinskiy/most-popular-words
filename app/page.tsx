@@ -34,14 +34,14 @@ const getWords = cacheDb(
   }) =>
     await queryThrowError<Word>(
       "Couldn't get words",
-      `SELECT value, occurrences, percentage, value in (SELECT word FROM saved WHERE username = $1) AS saved, translation, definition, example
-           FROM user_words_with_percentage
-           WHERE value LIKE $2 AND source LIKE $3 AND type LIKE $4 AND language = $5 AND COALESCE(knowledge, '') LIKE $9 AND (value in (SELECT word FROM saved WHERE username = $1) = $6 OR value in (SELECT word FROM saved WHERE username = $1) = true)
+      `SELECT value, occurrences, percentage, saved, translation, definition, example
+           FROM user_words_with_percentage($1)
+        WHERE value LIKE $2 AND source LIKE $3 AND type LIKE $4 AND language = $5 AND COALESCE(knowledge, '') LIKE $9 AND (saved = $6 OR saved = true)
            ORDER BY ` +
         getWordsSort(sort) +
         " LIMIT $7 OFFSET $8",
       [
-        username,
+        username ?? null,
         `%${search}%`,
         `%${source}%`,
         type,
@@ -51,7 +51,10 @@ const getWords = cacheDb(
         offset,
         knowledge,
       ]
-    ),
+    ).then((value) => {
+      console.log(knowledge);
+      return value;
+    }),
   ["words"]
 );
 
@@ -86,7 +89,7 @@ export default async function Home({ searchParams }: PageProps) {
   const language = (params.language ?? DEFAULT_LANGUAGE) as string;
   const source = (params.source ?? "") as string;
   const type = (params.type ?? "%%") as string;
-  const knowledge = (params.knowledge ?? "") as string;
+  const knowledge = (params.knowledge ?? "%%") as string;
   const saved = Boolean(params.saved ?? false);
 
   const offset = (page - 1) * ITEMS_PER_PAGE;
