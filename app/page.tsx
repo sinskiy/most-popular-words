@@ -65,6 +65,7 @@ const getWordsCount = cacheDb(
     type,
     language,
     saved,
+    knowledge,
     username,
   }: {
     search: string;
@@ -72,12 +73,13 @@ const getWordsCount = cacheDb(
     type: string;
     language: string;
     saved: boolean;
+    knowledge: string;
     username?: string;
   }) =>
     await queryThrowError<{ count: number }>(
       "Couldn't get words count",
-      "SELECT COUNT(*) FROM words WHERE value LIKE $1 AND source LIKE $2 AND type LIKE $3 AND language = $4 AND (value in (SELECT word FROM saved WHERE username = $5) = $6 OR value in (SELECT word FROM saved WHERE username = $5) = true)",
-      [`%${search}%`, `%${source}%`, type, language, username, saved]
+      "SELECT COUNT(*) FROM user_words_with_percentage($1) WHERE value LIKE $2 AND source LIKE $3 AND type LIKE $4 AND language = $5 AND (saved = $6 OR saved = true) AND COALESCE(knowledge, '') LIKE $7",
+      [username, `%${search}%`, `%${source}%`, type, language, saved, knowledge]
     )
 );
 
@@ -113,6 +115,7 @@ export default async function Home({ searchParams }: PageProps) {
     type,
     language,
     saved,
+    knowledge,
     username: typeof user !== "boolean" ? user.username : undefined,
   });
   const totalPages = Math.ceil(wordsCount.rows[0].count / ITEMS_PER_PAGE);
