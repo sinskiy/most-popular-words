@@ -31,7 +31,20 @@ export default function Filters({ saved = true, user }: FiltersProps) {
 
   return (
     <Dropdown id="filters">
-      <Form pending={false} action={handleFilters} heading="Filters">
+      <Form
+        pending={false}
+        action={handleFilters}
+        heading="Filters"
+        nav={
+          <button
+            className="button"
+            type="button"
+            onClick={() => handleFilters(new FormData())}
+          >
+            reset
+          </button>
+        }
+      >
         <InputField
           type="text"
           id="source"
