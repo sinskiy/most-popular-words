@@ -13,6 +13,16 @@ export const getSaved = cacheDb(
   ["words"]
 );
 
+export const getSavedWithLanguage = cacheDb(
+  async (offset: number, username: string, language: string, limit?: number) =>
+    await queryThrowError<SavedWord>(
+      "Couldn't get saved words",
+      "SELECT value, occurrences, percentage, source, type, knowledge, translation, definition, example, true AS saved FROM user_words_with_percentage WHERE LANGUAGE = $1 AND value in (SELECT word FROM saved WHERE username = $2) LIMIT $3 OFFSET $4",
+      [language, username, limit ?? ITEMS_PER_PAGE, offset]
+    ),
+  ["words"]
+);
+
 export const getSavedCount = cacheDb(
   async (username: string) =>
     await queryThrowError<{ count: number }>(
