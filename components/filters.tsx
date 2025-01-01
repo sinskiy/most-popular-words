@@ -20,7 +20,12 @@ export default function Filters({ saved = true, user }: FiltersProps) {
 
   async function handleFilters(formData: FormData) {
     const params = new URLSearchParams(searchParams);
-    const newParams = setParams(params, formData, ["source", "type", "saved"]);
+    const newParams = setParams(params, formData, [
+      "source",
+      "type",
+      "saved",
+      "knowledge",
+    ]);
     replace(`${pathname}?${newParams.toString()}`);
   }
 
@@ -58,7 +63,7 @@ export default function Filters({ saved = true, user }: FiltersProps) {
                 <input
                   type="radio"
                   id={knowledgeType}
-                  name="knowledge-type"
+                  name="knowledge"
                   value={knowledgeType}
                   defaultChecked={
                     searchParams.get("knowledge") === knowledgeType
@@ -69,7 +74,7 @@ export default function Filters({ saved = true, user }: FiltersProps) {
             ))}
           </fieldset>
         )}
-        {saved && (
+        {user && saved && (
           <div className="flex gap-2">
             <input
               type="checkbox"
