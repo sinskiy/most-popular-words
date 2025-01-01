@@ -9,11 +9,10 @@ import { knowledge, types } from "../types/word";
 import { User } from "../types/user";
 
 interface FiltersProps {
-  saved?: boolean;
   user?: User | false;
 }
 
-export default function Filters({ saved = true, user }: FiltersProps) {
+export default function Filters({ user }: FiltersProps) {
   const searchParams = useSearchParams();
   const pathname = usePathname();
   const { replace } = useRouter();
@@ -87,7 +86,7 @@ export default function Filters({ saved = true, user }: FiltersProps) {
             ))}
           </fieldset>
         )}
-        {user && saved && (
+        {user && (
           <div className="flex gap-2">
             <input
               type="checkbox"
