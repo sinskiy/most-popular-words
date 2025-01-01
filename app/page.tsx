@@ -11,22 +11,33 @@ import Filters from "../components/filters";
 import { Suspense } from "react";
 
 const getWords = cacheDb(
-  async (
-    offset: number,
-    search: string,
-    source: string,
-    type: string,
-    language: string,
-    sort: string,
-    saved: boolean,
-    username?: string
-  ) =>
+  async ({
+    offset,
+    search,
+    source,
+    type,
+    language,
+    knowledge,
+    sort,
+    saved,
+    username,
+  }: {
+    offset: number;
+    search: string;
+    source: string;
+    type: string;
+    language: string;
+    knowledge: string;
+    sort: string;
+    saved: boolean;
+    username?: string;
+  }) =>
     await queryThrowError<Word>(
       "Couldn't get words",
       `SELECT value, occurrences, percentage, value in (SELECT word FROM saved WHERE username = $1) AS saved, translation, definition, example
            FROM user_words_with_percentage
-           WHERE value LIKE $2 AND source LIKE $3 AND type LIKE $4 AND language = $5 AND (value in (SELECT word FROM saved WHERE username = $1) = $6 OR value in (SELECT word FROM saved WHERE username = $1) = true) AND (username = $1 OR username IS NULL)
-       ORDER BY ` +
+           WHERE value LIKE $2 AND source LIKE $3 AND type LIKE $4 AND language = $5 AND COALESCE(knowledge, '') LIKE $9 AND (value in (SELECT word FROM saved WHERE username = $1) = $6 OR value in (SELECT word FROM saved WHERE username = $1) = true)
+           ORDER BY ` +
         getWordsSort(sort) +
         " LIMIT $7 OFFSET $8",
       [
@@ -38,20 +49,28 @@ const getWords = cacheDb(
         saved,
         ITEMS_PER_PAGE,
         offset,
+        knowledge,
       ]
     ),
   ["words"]
 );
 
 const getWordsCount = cacheDb(
-  async (
-    search: string,
-    source: string,
-    type: string,
-    language: string,
-    saved: boolean,
-    username?: string
-  ) =>
+  async ({
+    search,
+    source,
+    type,
+    language,
+    saved,
+    username,
+  }: {
+    search: string;
+    source: string;
+    type: string;
+    language: string;
+    saved: boolean;
+    username?: string;
+  }) =>
     await queryThrowError<{ count: number }>(
       "Couldn't get words count",
       "SELECT COUNT(*) FROM words WHERE value LIKE $1 AND source LIKE $2 AND type LIKE $3 AND language = $4 AND (value in (SELECT word FROM saved WHERE username = $5) = $6 OR value in (SELECT word FROM saved WHERE username = $5) = true)",
@@ -67,30 +86,32 @@ export default async function Home({ searchParams }: PageProps) {
   const language = (params.language ?? DEFAULT_LANGUAGE) as string;
   const source = (params.source ?? "") as string;
   const type = (params.type ?? "%%") as string;
+  const knowledge = (params.knowledge ?? "") as string;
   const saved = Boolean(params.saved ?? false);
 
   const offset = (page - 1) * ITEMS_PER_PAGE;
 
   const user = await getUser();
 
-  const words = await getWords(
+  const words = await getWords({
     offset,
     search,
     source,
     type,
     language,
+    knowledge,
     sort,
     saved,
-    typeof user !== "boolean" ? user.username : undefined
-  );
-  const wordsCount = await getWordsCount(
+    username: typeof user !== "boolean" ? user.username : undefined,
+  });
+  const wordsCount = await getWordsCount({
     search,
     source,
     type,
     language,
     saved,
-    typeof user !== "boolean" ? user.username : undefined
-  );
+    username: typeof user !== "boolean" ? user.username : undefined,
+  });
   const totalPages = Math.ceil(wordsCount.rows[0].count / ITEMS_PER_PAGE);
 
   return (
