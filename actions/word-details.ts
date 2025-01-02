@@ -27,6 +27,8 @@ export async function setWordDetails(
       ]
     );
     revalidateTag("words");
+
+    return { success: true };
   } catch (e) {
     return { message: "Couldn't update" };
   }

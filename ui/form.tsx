@@ -7,6 +7,7 @@ interface FormProps
   heading?: string;
   message?: string;
   label?: string;
+  showSubmit?: boolean;
   nav?: ReactNode;
 }
 
@@ -16,6 +17,7 @@ export default function Form({
   children,
   message,
   label = "submit",
+  showSubmit = true,
   nav,
   ...props
 }: FormProps) {
@@ -25,9 +27,11 @@ export default function Form({
       {message && <p>{message}</p>}
       <div className="flex flex-col gap-2">{children}</div>
       <nav className="flex gap-2">
-        <button disabled={pending} type="submit" className="button">
-          {label}
-        </button>
+        {showSubmit && (
+          <button disabled={pending} type="submit" className="button">
+            {label}
+          </button>
+        )}
         {nav}
       </nav>
     </form>
