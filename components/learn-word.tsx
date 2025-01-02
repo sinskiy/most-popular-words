@@ -11,6 +11,7 @@ import { User } from "../types/user";
 interface LearnWordProps {
   words: SavedWord[];
   user: User;
+  reverse: string;
 }
 
 function getFilteredWords(words: SavedWord[], prevWord: string | false) {
@@ -29,7 +30,7 @@ function getFilteredWords(words: SavedWord[], prevWord: string | false) {
   return filteredWords;
 }
 
-export default function LearnWord({ user, words }: LearnWordProps) {
+export default function LearnWord({ user, words, reverse }: LearnWordProps) {
   const [localWords, setLocalWords] = useState(words);
 
   useEffect(() => {
@@ -82,29 +83,49 @@ export default function LearnWord({ user, words }: LearnWordProps) {
             </p>
           ) : (
             <>
-              <h1 className="text-4xl font-bold">
-                {filteredWords[randomWordIndex].value}
-              </h1>
+              {reverse === "true" ? (
+                <ul>
+                  {(["translation", "definition", "example"] as const).map(
+                    (value) => (
+                      <li key={value} className="grid">
+                        <span className="text-sm font-medium text-stone-300">
+                          {value}
+                        </span>
+                        <span className="text-lg">
+                          {filteredWords[randomWordIndex][value] ?? (
+                            <i>no {value}</i>
+                          )}
+                        </span>
+                      </li>
+                    )
+                  )}
+                </ul>
+              ) : (
+                <h1 className="text-4xl font-bold">
+                  {filteredWords[randomWordIndex].value}
+                </h1>
+              )}
               <div
                 className={cn([
                   "grid gap-4 w-fit items-center",
                   showAnswers && "grid-cols-2",
                 ])}
               >
-                {(["translation", "definition", "example"] as const).map(
-                  (value) => (
-                    <Fragment key={value}>
-                      <InputField type="text" id={value} />
-                      {showAnswers && (
-                        <p>
-                          {filteredWords[randomWordIndex][value] ?? (
-                            <i>no {value}</i>
-                          )}
-                        </p>
-                      )}
-                    </Fragment>
-                  )
-                )}
+                {(reverse === "true"
+                  ? (["value"] as const)
+                  : (["translation", "definition", "example"] as const)
+                ).map((value) => (
+                  <Fragment key={value}>
+                    <InputField type="text" id={value} />
+                    {showAnswers && (
+                      <p>
+                        {filteredWords[randomWordIndex][value] ?? (
+                          <i>no {value}</i>
+                        )}
+                      </p>
+                    )}
+                  </Fragment>
+                ))}
               </div>
             </>
           )}
