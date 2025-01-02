@@ -9,6 +9,7 @@ import { ITEMS_PER_PAGE } from "../lib/db";
 import Sort from "../components/sort";
 import Filters from "../components/filters";
 import { Suspense } from "react";
+import Tip from "../components/tip";
 
 const getWords = cacheDb(
   async ({
@@ -128,11 +129,7 @@ export default async function Home({ searchParams }: PageProps) {
           <Filters user={user} />
         </Suspense>
       </header>
-      {user === false && (
-        <div className="neutral px-12 max-md:px-6 py-4 font-medium">
-          tip: sign up or log in to save and learn words
-        </div>
-      )}
+      {user === false && <Tip>sign up or log in to save and learn words</Tip>}
       <Words list={words.rows} user={user} />
       <Pagination curr={page} end={totalPages} />
     </main>
