@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import "./globals.css";
 import Header from "../components/header";
+import Streak from "../components/streak";
 
 const TITLE = "Most popular words in _____";
 const DESCRIPTION = "View and learn words";
@@ -28,6 +29,7 @@ export default function RootLayout({
   return (
     <html lang="en">
       <body className="bg-black text-white m-4 flex flex-col gap-4 max-w-screen-lg mx-auto">
+        <Streak />
         <Header />
         {children}
       </body>
