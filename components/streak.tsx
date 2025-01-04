@@ -10,7 +10,8 @@ export default function Streak() {
     const lastCheckedString = localStorage.getItem("last-checked-streak");
     if (
       !lastCheckedString ||
-      Date.now() - new Date(lastCheckedString).getTime() > 1000 * 60 * 60 * 24
+      Date.now() - new Date(Number(lastCheckedString)).getTime() >
+        1000 * 60 * 60 * 24
     ) {
       formRef.current?.requestSubmit();
     }

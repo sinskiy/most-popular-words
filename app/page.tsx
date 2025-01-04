@@ -52,10 +52,7 @@ const getWords = cacheDb(
         offset,
         knowledge,
       ]
-    ).then((value) => {
-      console.log(knowledge);
-      return value;
-    }),
+    ),
   ["words"]
 );
 
