@@ -172,7 +172,7 @@ function LearnWordLoaded({
                 {value}
               </span>
               <span className="text-lg">
-                {word[value] ?? <i>no {value}</i>}
+                {word[value] || <i>no {value}</i>}
               </span>
             </li>
           ))}
@@ -181,7 +181,7 @@ function LearnWordLoaded({
         <h1 className="text-4xl font-bold">{word.value}</h1>
       )}
       <Form
-        pending={(state?.success === true && isSuccessOld === false) || pending}
+        pending={pending}
         action={action}
         message={state?.message}
         className={cn([
