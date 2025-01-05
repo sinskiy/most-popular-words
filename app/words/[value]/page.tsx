@@ -10,7 +10,7 @@ const getWord = cacheDb(
   async (value: string, username: string | false) =>
     await queryThrowError<SavedWord>(
       "Couldn't get words",
-      `SELECT value, occurrences, percentage, saved, source, type, translation, definition, example, knowledge
+      `SELECT value, occurrences, percentage, saved, source, type, translations, definitions, examples, knowledge
            FROM user_words_with_percentage($1)
         WHERE value = $2`,
       [username || null, value]
