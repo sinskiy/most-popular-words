@@ -8,7 +8,7 @@ import { updateKnowledge } from "../actions/update-knowledge";
 import Form from "../ui/form";
 import { User } from "../types/user";
 import Tip from "./tip";
-import { setWordDetails } from "../actions/word-details";
+import { setWordDetailsWithSeparator } from "../actions/word-details";
 
 interface LearnWordProps {
   words: SavedWord[];
@@ -148,7 +148,7 @@ function LearnWordLoaded({
   setIsSuccessOld: (value: boolean) => void;
 }) {
   const [state, action, pending] = useActionState(
-    setWordDetails.bind(null, {
+    setWordDetailsWithSeparator.bind(null, {
       username,
       word: word.value,
     }),
@@ -157,15 +157,21 @@ function LearnWordLoaded({
 
   return (
     <>
-      {reverse === "true" &&
+      {reverse === "true" ? (
         (!word.translations?.length ||
           !word.definitions?.length ||
           !word.examples?.length) && (
           <Tip>
-            toggle off <i>reverse learn mode</i> to add translation, definition
-            or example
+            toggle off <i>reverse learn mode</i> to add translations,
+            definitions and examples
           </Tip>
-        )}
+        )
+      ) : (
+        <Tip>
+          separate with ", " to save multiple translations, definitions and
+          examples
+        </Tip>
+      )}
       {reverse === "true" ? (
         <ul>
           {(["translations", "definitions", "examples"] as const).map(
@@ -182,7 +188,9 @@ function LearnWordLoaded({
           )}
         </ul>
       ) : (
-        <h1 className="text-4xl font-bold">{word.value}</h1>
+        <h1 className="text-4xl font-bold">
+          <a href={`/words/${word.value}`}>{word.value}</a>
+        </h1>
       )}
       <Form
         pending={pending}
