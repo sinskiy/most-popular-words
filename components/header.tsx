@@ -5,6 +5,7 @@ import { cn } from "../lib/helpers";
 import { Suspense } from "react";
 import HeaderLink from "../ui/header-link";
 import LanguagePicker from "./language-picker";
+import LogOut from "./log-out";
 
 export default async function Header() {
   return (
@@ -62,9 +63,7 @@ async function Menu() {
             </div>
             <HeaderLink href="/learn">learn</HeaderLink>
             <HeaderLink href="/saved">saved</HeaderLink>
-            <button onClick={logOut} className="button">
-              log out
-            </button>
+            <LogOut />
           </>
         ) : (
           <>
