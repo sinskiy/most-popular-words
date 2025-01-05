@@ -110,6 +110,10 @@ function packageDetails(details: FormData) {
     definitions: string[] = [],
     examples: string[] = [];
   for (const [key, value] of details) {
+    if (!value) {
+      continue;
+    }
+
     if (key.includes("translations-")) {
       translations.push(value as string);
     } else if (key.includes("definitions-")) {

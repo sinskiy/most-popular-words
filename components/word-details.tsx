@@ -109,20 +109,33 @@ export function WordDetailsBase({
     >
       {(["translations", "definitions", "examples"] as const).map((value) => (
         <Fragment key={value}>
-          {(word[value]
+          {(word[value] && word[value].length >= 1
             ? [...word[value], ...added[value]]
             : ["", ...added[value]]
           ).map(
             (detail, i) =>
               typeof detail === "string" && (
-                <InputField
-                  type="text"
-                  id={`${value}-${i}`}
-                  key={`${value}-${i}`}
-                  labelText={`${value.slice(0, -1)} ${i + 1}`}
-                  small
-                  defaultValue={detail ?? ""}
-                />
+                <div key={`${value}-${i}`} className="flex">
+                  <InputField
+                    type="text"
+                    id={`${value}-${i}`}
+                    labelText={`${value.slice(0, -1)} ${i + 1}`}
+                    small
+                    defaultValue={detail ?? ""}
+                  />
+                  <button
+                    className="button h-fit self-end ml-2"
+                    onClick={() =>
+                      ((
+                        document.querySelector(
+                          `#${value}-${i}`
+                        ) as HTMLInputElement
+                      ).value = "")
+                    }
+                  >
+                    delete
+                  </button>
+                </div>
               )
           )}
           <button className="button" type="button" onClick={() => add(value)}>
