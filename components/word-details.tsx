@@ -1,6 +1,6 @@
 "use client";
 
-import { PropsWithChildren, useActionState } from "react";
+import { Fragment, PropsWithChildren, useActionState, useState } from "react";
 import {
   setWordDetails,
   setWordDetailsWithKnowledge,
@@ -80,6 +80,12 @@ export function WordDetailsWithKnowledge({
   );
 }
 
+const initialAdded = {
+  translations: [],
+  definitions: [],
+  examples: [],
+};
+
 export function WordDetailsBase({
   word,
   actionState,
@@ -89,26 +95,41 @@ export function WordDetailsBase({
   actionState: UseActionState;
 } & PropsWithChildren) {
   const [state, action, pending] = actionState;
-  console.log(word);
+  const [added, setAdded] = useState<Record<string, string[]>>(initialAdded);
+  function add(key: string) {
+    setAdded({ ...added, [key]: [...added[key], ""] });
+  }
   return (
     <Form
       pending={pending}
       heading="Details"
       action={action}
       message={state?.message}
+      onSubmit={() => setAdded(initialAdded)}
     >
-      {(["translations", "definitions", "examples"] as const).map((value) =>
-        (word[value] || [""]).map((detail, i) => (
-          <InputField
-            key={detail}
-            type="text"
-            id={`${value}-${i}`}
-            labelText={`${value} ${i + 1}`}
-            small
-            defaultValue={detail ?? ""}
-          />
-        ))
-      )}
+      {(["translations", "definitions", "examples"] as const).map((value) => (
+        <Fragment key={value}>
+          {(word[value]
+            ? [...word[value], ...added[value]]
+            : ["", ...added[value]]
+          ).map(
+            (detail, i) =>
+              typeof detail === "string" && (
+                <InputField
+                  type="text"
+                  id={`${value}-${i}`}
+                  key={`${value}-${i}`}
+                  labelText={`${value.slice(0, -1)} ${i + 1}`}
+                  small
+                  defaultValue={detail ?? ""}
+                />
+              )
+          )}
+          <button className="button" type="button" onClick={() => add(value)}>
+            add {value.slice(0, -1)}
+          </button>
+        </Fragment>
+      ))}
       <div>{children}</div>
     </Form>
   );
