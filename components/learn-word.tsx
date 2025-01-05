@@ -9,6 +9,7 @@ import Form from "../ui/form";
 import { User } from "../types/user";
 import Tip from "./tip";
 import { setWordDetailsWithSeparator } from "../actions/word-details";
+import Save from "./save";
 
 interface LearnWordProps {
   words: SavedWord[];
@@ -90,7 +91,7 @@ export default function LearnWord({ user, words, reverse }: LearnWordProps) {
               word={filteredWords[randomWordIndex]}
               reverse={reverse}
               showAnswers={showAnswers}
-              username={user.username}
+              user={user}
               isSuccessOld={isSuccessOld}
               setIsSuccessOld={setIsSuccessOld}
             />
@@ -136,20 +137,20 @@ function LearnWordLoaded({
   reverse,
   word,
   showAnswers,
-  username,
+  user,
   isSuccessOld,
   setIsSuccessOld,
 }: {
   reverse: string;
   word: SavedWord;
   showAnswers: boolean;
-  username: string;
+  user: User;
   isSuccessOld: boolean;
   setIsSuccessOld: (value: boolean) => void;
 }) {
   const [state, action, pending] = useActionState(
     setWordDetailsWithSeparator.bind(null, {
-      username,
+      username: user.username,
       word: word.value,
     }),
     undefined
@@ -172,6 +173,7 @@ function LearnWordLoaded({
           examples
         </Tip>
       )}
+      <Save user={user} word={word} cn="w-fit" />
       {reverse === "true" ? (
         <ul>
           {(["translations", "definitions", "examples"] as const).map(
