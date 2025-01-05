@@ -158,7 +158,9 @@ function LearnWordLoaded({
   return (
     <>
       {reverse === "true" &&
-        (!word.translation || !word.definition || !word.example) && (
+        (!word.translations?.length ||
+          !word.definitions?.length ||
+          !word.examples?.length) && (
           <Tip>
             toggle off <i>reverse learn mode</i> to add translation, definition
             or example
@@ -166,16 +168,18 @@ function LearnWordLoaded({
         )}
       {reverse === "true" ? (
         <ul>
-          {(["translation", "definition", "example"] as const).map((value) => (
-            <li key={value} className="grid">
-              <span className="text-sm font-medium text-stone-300">
-                {value}
-              </span>
-              <span className="text-lg">
-                {word[value] || <i>no {value}</i>}
-              </span>
-            </li>
-          ))}
+          {(["translations", "definitions", "examples"] as const).map(
+            (value) => (
+              <li key={value} className="grid">
+                <span className="text-sm font-medium text-stone-300">
+                  {value}
+                </span>
+                <span className="text-lg">
+                  {word[value]?.join(", ") || <i>no {value}</i>}
+                </span>
+              </li>
+            )
+          )}
         </ul>
       ) : (
         <h1 className="text-4xl font-bold">{word.value}</h1>
@@ -184,23 +188,28 @@ function LearnWordLoaded({
         pending={pending}
         action={action}
         message={state?.message}
-        className={cn([
-          "grid gap-4 w-fit items-center",
-          showAnswers && "grid-cols-2",
-        ])}
+        className={cn(["grid gap-4 w-fit items-center"])}
         label="update details"
         showSubmit={reverse !== "true"}
         onSubmit={() => setIsSuccessOld(false)}
       >
-        {(reverse === "true"
-          ? (["value"] as const)
-          : (["translation", "definition", "example"] as const)
-        ).map((value) => (
-          <Fragment key={value}>
-            <InputField type="text" id={value} />
-            {showAnswers && <p>{word[value] ?? <i>no {value}</i>}</p>}
-          </Fragment>
-        ))}
+        {reverse === "true" ? (
+          <>
+            <InputField type="text" id="value" />
+            {showAnswers && <p>{word.value}</p>}
+          </>
+        ) : (
+          (["translations", "definitions", "examples"] as const).map(
+            (value) => (
+              <Fragment key={value}>
+                <InputField type="text" id={value} />
+                {showAnswers && (
+                  <p>{word[value]?.join(", ") || <i>no {value}</i>}</p>
+                )}
+              </Fragment>
+            )
+          )
+        )}
       </Form>
       {state?.success === true && isSuccessOld === false && (
         <p>successfully updated details</p>

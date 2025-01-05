@@ -1,4 +1,3 @@
-import { ChangeEvent } from "react";
 import { getUser } from "../../actions/auth";
 import { getSaved, getSavedWithLanguage } from "../../actions/saved";
 import Filters from "../../components/filters";
@@ -6,12 +5,13 @@ import LearnWord from "../../components/learn-word";
 import { PageProps } from "../../types/page";
 import AllLanguages from "../../components/all-languages";
 import ReverseLearn from "../../components/reverse-learn";
+import { DEFAULT_LANGUAGE } from "../../types/word";
 
 export default async function Learn({ searchParams }: PageProps) {
   const user = await getUser();
 
   const params = await searchParams;
-  const language = (params.language ?? "english") as string;
+  const language = (params.language ?? DEFAULT_LANGUAGE) as string;
   const skipLanguage = params["skip-language"] ?? "false";
   const reverse = (params.reverse ?? "false") as string;
   const source = (params.source ?? "") as string;

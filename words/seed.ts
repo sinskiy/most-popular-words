@@ -29,6 +29,7 @@ async function addWordsFromAllDirectories(
   db.end();
 }
 
+// TODO: update
 async function createDb() {
   await db.query(`CREATE TABLE users (
       username VARCHAR(255) PRIMARY KEY,
@@ -56,9 +57,9 @@ async function createDb() {
   await db.query(`CREATE TABLE user_words (
       username VARCHAR(255) NOT NULL REFERENCES users(username),
       word VARCHAR(255) NOT NULL,
-      translation VARCHAR(255),
-      definition VARCHAR(255),
-      example VARCHAR(255),
+      translations VARCHAR(255)[],
+      definitions VARCHAR(255)[],
+      examples VARCHAR(255)[],
       knowledge VARCHAR(30) DEFAULT 'again' CHECK(knowledge in ('again', 'hard', 'good', 'easy')),
       UNIQUE (username, word)
     )`);

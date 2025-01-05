@@ -1,11 +1,6 @@
 import Pagination from "../ui/pagination";
 import Words from "../components/words";
-import {
-  DEFAULT_LANGUAGE,
-  DEFAULT_SORT,
-  knowledge as knowledgeTypes,
-  Word,
-} from "../types/word";
+import { DEFAULT_LANGUAGE, DEFAULT_SORT, Word } from "../types/word";
 import { PageProps } from "../types/page";
 import queryThrowError from "../lib/query-throw-error";
 import cacheDb from "../lib/cache-db";
@@ -46,7 +41,7 @@ const getWords = cacheDb(
   }) =>
     await queryThrowError<Word>(
       "Couldn't get words",
-      `SELECT value, occurrences, percentage, saved, translation, definition, example
+      `SELECT value, occurrences, percentage, saved, translations, definitions, examples
            FROM user_words_with_percentage($1)
         WHERE value LIKE $2 AND source LIKE $3 AND type LIKE $4 AND language = $5 AND (knowledge = $9 OR knowledge = $10 OR knowledge = $11 OR knowledge = $12 OR COALESCE(knowledge, '') LIKE $13) AND (saved = $6 OR saved = true)
            ORDER BY ` +
@@ -97,7 +92,7 @@ const getWordsCount = cacheDb(
   }) =>
     await queryThrowError<{ count: number }>(
       "Couldn't get words count",
-      "SELECT COUNT(*) FROM user_words_with_percentage($1) WHERE value LIKE $2 AND source LIKE $3 AND type LIKE $4 AND language = $5 AND (saved = $6 OR saved = true) AND (knowledge = $7 OR knowledge = $8 OR knowledge = $9 OR knowledge = $10 OR knowledge LIKE $11)",
+      "SELECT COUNT(*) FROM user_words_with_percentage($1) WHERE value LIKE $2 AND source LIKE $3 AND type LIKE $4 AND language = $5 AND (saved = $6 OR saved = true) AND (knowledge = $7 OR knowledge = $8 OR knowledge = $9 OR knowledge = $10 OR COALESCE(knowledge, '') LIKE $11)",
       [
         username,
         `%${search}%`,

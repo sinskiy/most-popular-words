@@ -89,6 +89,7 @@ export function WordDetailsBase({
   actionState: UseActionState;
 } & PropsWithChildren) {
   const [state, action, pending] = actionState;
+  console.log(word);
   return (
     <Form
       pending={pending}
@@ -96,15 +97,18 @@ export function WordDetailsBase({
       action={action}
       message={state?.message}
     >
-      {(["translation", "definition", "example"] as const).map((value) => (
-        <InputField
-          key={value}
-          type="text"
-          id={value}
-          small
-          defaultValue={word[value] ?? ""}
-        />
-      ))}
+      {(["translations", "definitions", "examples"] as const).map((value) =>
+        (word[value] || [""]).map((detail, i) => (
+          <InputField
+            key={detail}
+            type="text"
+            id={`${value}-${i}`}
+            labelText={`${value} ${i + 1}`}
+            small
+            defaultValue={detail ?? ""}
+          />
+        ))
+      )}
       <div>{children}</div>
     </Form>
   );
