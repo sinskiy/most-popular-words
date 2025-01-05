@@ -1,6 +1,11 @@
 import Pagination from "../ui/pagination";
 import Words from "../components/words";
-import { DEFAULT_LANGUAGE, DEFAULT_SORT, Word } from "../types/word";
+import {
+  DEFAULT_LANGUAGE,
+  DEFAULT_SORT,
+  knowledge as knowledgeTypes,
+  Word,
+} from "../types/word";
 import { PageProps } from "../types/page";
 import queryThrowError from "../lib/query-throw-error";
 import cacheDb from "../lib/cache-db";
@@ -18,7 +23,10 @@ const getWords = cacheDb(
     source,
     type,
     language,
-    knowledge,
+    easy,
+    good,
+    hard,
+    again,
     sort,
     saved,
     username,
@@ -28,7 +36,10 @@ const getWords = cacheDb(
     source: string;
     type: string;
     language: string;
-    knowledge: string;
+    easy: string | false;
+    good: string | false;
+    hard: string | false;
+    again: string | false;
     sort: string;
     saved: boolean;
     username?: string;
@@ -37,7 +48,7 @@ const getWords = cacheDb(
       "Couldn't get words",
       `SELECT value, occurrences, percentage, saved, translation, definition, example
            FROM user_words_with_percentage($1)
-        WHERE value LIKE $2 AND source LIKE $3 AND type LIKE $4 AND language = $5 AND COALESCE(knowledge, '') LIKE $9 AND (saved = $6 OR saved = true)
+        WHERE value LIKE $2 AND source LIKE $3 AND type LIKE $4 AND language = $5 AND (knowledge = $9 OR knowledge = $10 OR knowledge = $11 OR knowledge = $12 OR COALESCE(knowledge, '') LIKE $13) AND (saved = $6 OR saved = true)
            ORDER BY ` +
         getWordsSort(sort) +
         " LIMIT $7 OFFSET $8",
@@ -50,7 +61,11 @@ const getWords = cacheDb(
         saved,
         ITEMS_PER_PAGE,
         offset,
-        knowledge,
+        easy,
+        good,
+        hard,
+        again,
+        !easy && !good && !hard && !again ? "%%" : false,
       ]
     ),
   ["words"]
@@ -63,7 +78,10 @@ const getWordsCount = cacheDb(
     type,
     language,
     saved,
-    knowledge,
+    easy,
+    good,
+    hard,
+    again,
     username,
   }: {
     search: string;
@@ -71,13 +89,28 @@ const getWordsCount = cacheDb(
     type: string;
     language: string;
     saved: boolean;
-    knowledge: string;
+    easy: string | false;
+    good: string | false;
+    hard: string | false;
+    again: string | false;
     username?: string;
   }) =>
     await queryThrowError<{ count: number }>(
       "Couldn't get words count",
-      "SELECT COUNT(*) FROM user_words_with_percentage($1) WHERE value LIKE $2 AND source LIKE $3 AND type LIKE $4 AND language = $5 AND (saved = $6 OR saved = true) AND COALESCE(knowledge, '') LIKE $7",
-      [username, `%${search}%`, `%${source}%`, type, language, saved, knowledge]
+      "SELECT COUNT(*) FROM user_words_with_percentage($1) WHERE value LIKE $2 AND source LIKE $3 AND type LIKE $4 AND language = $5 AND (saved = $6 OR saved = true) AND (knowledge = $7 OR knowledge = $8 OR knowledge = $9 OR knowledge = $10 OR knowledge LIKE $11)",
+      [
+        username,
+        `%${search}%`,
+        `%${source}%`,
+        type,
+        language,
+        saved,
+        easy,
+        good,
+        hard,
+        again,
+        !easy && !good && !hard && !again ? "%%" : false,
+      ]
     )
 );
 
@@ -89,7 +122,10 @@ export default async function Home({ searchParams }: PageProps) {
   const language = (params.language ?? DEFAULT_LANGUAGE) as string;
   const source = (params.source ?? "") as string;
   const type = (params.type ?? "%%") as string;
-  const knowledge = (params.knowledge ?? "%%") as string;
+  const easy = params.easy ? "easy" : false;
+  const good = params.good ? "good" : false;
+  const hard = params.hard ? "hard" : false;
+  const again = params.again ? "again" : false;
   const saved = Boolean(params.saved ?? false);
 
   const offset = (page - 1) * ITEMS_PER_PAGE;
@@ -102,7 +138,10 @@ export default async function Home({ searchParams }: PageProps) {
     source,
     type,
     language,
-    knowledge,
+    easy,
+    good,
+    hard,
+    again,
     sort,
     saved,
     username: typeof user !== "boolean" ? user.username : undefined,
@@ -113,7 +152,10 @@ export default async function Home({ searchParams }: PageProps) {
     type,
     language,
     saved,
-    knowledge,
+    easy,
+    good,
+    hard,
+    again,
     username: typeof user !== "boolean" ? user.username : undefined,
   });
   const totalPages = Math.ceil(wordsCount.rows[0].count / ITEMS_PER_PAGE);

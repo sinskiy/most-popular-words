@@ -23,7 +23,7 @@ export default function Filters({ user }: FiltersProps) {
       "source",
       "type",
       "saved",
-      "knowledge",
+      ...knowledge,
     ]);
     replace(`${pathname}?${newParams.toString()}`);
   }
@@ -73,13 +73,11 @@ export default function Filters({ user }: FiltersProps) {
             {knowledge.map((knowledgeType) => (
               <div key={knowledgeType} className="flex gap-3">
                 <input
-                  type="radio"
+                  type="checkbox"
                   id={knowledgeType}
-                  name="knowledge"
-                  value={knowledgeType}
-                  defaultChecked={
-                    searchParams.get("knowledge") === knowledgeType
-                  }
+                  name={knowledgeType}
+                  value="true"
+                  defaultChecked={searchParams.get(knowledgeType) === "true"}
                 />
                 <label htmlFor={knowledgeType}>{knowledgeType}</label>
               </div>
