@@ -8,16 +8,17 @@ import { save } from "../actions/save";
 interface SaveProps {
   user: false | User;
   word: Word;
+  cn?: string;
 }
 
-export default function Save({ user, word }: SaveProps) {
+export default function Save({ user, word, cn }: SaveProps) {
   const [, action, pending] = useActionState(
     save.bind(null, { user: user, word: word }),
     undefined
   );
 
   return (
-    <form action={action} className="min-w-5 grid place-items-center">
+    <form action={action} className={`min-w-5 grid place-items-center ${cn}`}>
       {user !== false && (
         <button type="submit" aria-label="save" title="save" disabled={pending}>
           <img

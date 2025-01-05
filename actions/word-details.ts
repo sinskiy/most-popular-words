@@ -33,3 +33,41 @@ export async function setWordDetails(
     return { message: "Couldn't update" };
   }
 }
+
+export async function setWordDetailsWithKnowledge(
+  {
+    username,
+    word,
+  }: {
+    username: string;
+    word: string;
+  },
+  state: unknown,
+  formData: FormData
+) {
+  try {
+    await db.query(
+      `INSERT INTO user_words (username, word, translation, definition, example, knowledge)
+       VALUES ($1, $2, $3, $4, $5, $6)
+       ON CONFLICT (username, word) DO UPDATE SET
+          translation = EXCLUDED.translation,
+          definition = EXCLUDED.definition,
+          example = EXCLUDED.example,
+          knowledge = EXCLUDED.knowledge`,
+      [
+        username,
+        word,
+        formData.get("translation"),
+        formData.get("definition"),
+        formData.get("example"),
+        formData.get("knowledge"),
+      ]
+    );
+    revalidateTag("words");
+
+    return { success: true };
+  } catch (e) {
+    console.log(e);
+    return { message: "Couldn't update" };
+  }
+}

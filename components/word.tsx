@@ -1,3 +1,4 @@
+import Link from "next/link";
 import { cn } from "../lib/helpers";
 import { User } from "../types/user";
 import { type Word } from "../types/word";
@@ -25,7 +26,9 @@ export default async function Word({ user, rank, word }: WordProps) {
       ])}
     >
       <p className="mr-4">{rank}.</p>
-      <p className="w-full text-2xl font-medium">{word.value}</p>
+      <p className="w-full text-2xl font-medium">
+        <Link href={`/words/${word.value}`}>{word.value}</Link>
+      </p>
       <p className="whitespace-nowrap">
         <span className="font-semibold">{word.occurrences} </span>
         <span className="max-md:hidden">
