@@ -1,4 +1,5 @@
 import { FormHTMLAttributes, PropsWithChildren, ReactNode } from "react";
+import { cn } from "../lib/helpers";
 
 interface FormProps
   extends FormHTMLAttributes<HTMLFormElement>,
@@ -19,10 +20,11 @@ export default function Form({
   label = "submit",
   showSubmit = true,
   nav,
+  className,
   ...props
 }: FormProps) {
   return (
-    <form {...props} className="flex flex-col gap-4">
+    <form {...props} className={cn(["flex flex-col gap-4", className])}>
       {heading && <h2 className="text-2xl font-bold">{heading}</h2>}
       {message && <p>{message}</p>}
       <div className="flex flex-col gap-2">{children}</div>
