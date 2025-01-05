@@ -43,12 +43,14 @@ async function QueriedWordDetails({ value }: { value: string }) {
   return (
     <>
       <Save user={user} word={word} cn="w-fit !inline ml-4" />
+      <p>
+        type: <span className="font-semibold">{word.type}</span>, source:{" "}
+        <span className="font-semibold">{word.source}</span>
+      </p>
       <p className="mt-4">
         <span className="font-semibold">{word.occurrences} </span>
         occurrence
-        {word.occurrences !== 1 && "s"}
-      </p>
-      <p>
+        {word.occurrences !== 1 && "s"},{" "}
         <span className="font-semibold">
           {(word.percentage * 100).toFixed(2)}
         </span>

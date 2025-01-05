@@ -41,7 +41,7 @@ export default function WordDetails({ user, word }: WordDetailsProps) {
       }
       className="!p-4 right-0"
     >
-      <WordDetailsBase user={user} word={word} actionState={actionState} />
+      <WordDetailsBase word={word} actionState={actionState} />
     </Dropdown>
   );
 }
@@ -62,7 +62,7 @@ export function WordDetailsWithKnowledge({
   );
 
   return (
-    <WordDetailsBase user={user} word={word} actionState={actionState}>
+    <WordDetailsBase word={word} actionState={actionState}>
       <h3 className="text-xl font-medium mt-4">knowledge</h3>
       {knowledge.map((value) => (
         <div key={value} className="flex gap-3">
@@ -80,13 +80,11 @@ export function WordDetailsWithKnowledge({
   );
 }
 
-export function WordDetailsBase<State, Payload>({
-  user,
+export function WordDetailsBase({
   word,
   actionState,
   children,
 }: {
-  user: User;
   word: Word;
   actionState: UseActionState;
 } & PropsWithChildren) {
@@ -107,7 +105,7 @@ export function WordDetailsBase<State, Payload>({
           defaultValue={word[value] ?? ""}
         />
       ))}
-      {children}
+      <div>{children}</div>
     </Form>
   );
 }
