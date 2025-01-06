@@ -1,7 +1,6 @@
 "use client";
 
 import { usePathname, useRouter, useSearchParams } from "next/navigation";
-import { ChangeEvent } from "react";
 
 export default function ReverseLearn() {
   const params = useSearchParams();
@@ -9,7 +8,7 @@ export default function ReverseLearn() {
   const pathname = usePathname();
   const { replace } = useRouter();
 
-  function setReverse(e: ChangeEvent<HTMLInputElement>) {
+  function setReverse() {
     const searchParams = new URLSearchParams(params);
     if (reverse === "true") {
       searchParams.delete("reverse");

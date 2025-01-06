@@ -169,8 +169,8 @@ function LearnWordLoaded({
         )
       ) : (
         <Tip>
-          separate with ", " to save multiple translations, definitions and
-          examples
+          separate with &quot;, &quot; to save multiple translations,
+          definitions and examples
         </Tip>
       )}
       <Save user={user} word={word} cn="w-fit" />
