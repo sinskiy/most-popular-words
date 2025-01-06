@@ -1,7 +1,6 @@
 "use client";
 
 import { usePathname, useRouter, useSearchParams } from "next/navigation";
-import { ChangeEvent } from "react";
 
 export default function AllLanguages() {
   const params = useSearchParams();
@@ -9,7 +8,7 @@ export default function AllLanguages() {
   const pathname = usePathname();
   const { replace } = useRouter();
 
-  function setSkipLanguage(e: ChangeEvent<HTMLInputElement>) {
+  function setSkipLanguage() {
     const searchParams = new URLSearchParams(params);
     if (skipLanguage === "true") {
       searchParams.delete("skip-language");

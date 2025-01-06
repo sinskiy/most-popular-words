@@ -18,8 +18,6 @@ interface WordDetailsProps {
 }
 
 export default function WordDetails({ user, word }: WordDetailsProps) {
-  if (user === false) return;
-
   const actionState = useActionState(
     setWordDetails.bind(null, {
       username: user && user.username,
@@ -27,6 +25,8 @@ export default function WordDetails({ user, word }: WordDetailsProps) {
     }),
     undefined
   );
+
+  if (user === false) return;
 
   return (
     <Dropdown

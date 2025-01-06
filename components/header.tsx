@@ -1,5 +1,5 @@
 import Link from "next/link";
-import { getUser, logOut } from "../actions/auth";
+import { getUser } from "../actions/auth";
 import Search from "./search";
 import { cn } from "../lib/helpers";
 import { Suspense } from "react";
