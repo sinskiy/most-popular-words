@@ -173,26 +173,31 @@ function LearnWordLoaded({
           definitions and examples
         </Tip>
       )}
-      <Save user={user} word={word} cn="w-fit" />
       {reverse === "true" ? (
-        <ul>
-          {(["translations", "definitions", "examples"] as const).map(
-            (value) => (
-              <li key={value} className="grid">
-                <span className="text-sm font-medium text-stone-300">
-                  {value}
-                </span>
-                <span className="text-lg">
-                  {word[value]?.join(", ") || <i>no {value}</i>}
-                </span>
-              </li>
-            )
-          )}
-        </ul>
+        <>
+          <Save user={user} word={word} cn="w-fit" />
+          <ul>
+            {(["translations", "definitions", "examples"] as const).map(
+              (value) => (
+                <li key={value} className="grid">
+                  <span className="text-sm font-medium text-stone-300">
+                    {value}
+                  </span>
+                  <span className="text-lg">
+                    {word[value]?.join(", ") || <i>no {value}</i>}
+                  </span>
+                </li>
+              )
+            )}
+          </ul>
+        </>
       ) : (
-        <h1 className="text-4xl font-bold">
-          <a href={`/words/${word.value}`}>{word.value}</a>
-        </h1>
+        <div className="flex gap-2">
+          <h1 className="text-4xl font-bold">
+            <a href={`/words/${word.value}`}>{word.value}</a>
+          </h1>
+          <Save user={user} word={word} cn="w-fit" />
+        </div>
       )}
       <Form
         pending={pending}
