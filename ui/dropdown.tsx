@@ -1,4 +1,10 @@
-import { HTMLAttributes, PropsWithChildren, ReactNode } from "react";
+import {
+  ChangeEvent,
+  HTMLAttributes,
+  PropsWithChildren,
+  ReactNode,
+  useRef,
+} from "react";
 import { cn } from "../lib/helpers";
 
 interface DropdownProps extends PropsWithChildren, HTMLAttributes<HTMLElement> {
@@ -15,6 +21,24 @@ export default function Dropdown({
   labelClassName,
   ...props
 }: DropdownProps) {
+  const inputRef = useRef<HTMLInputElement>(null);
+
+  function handleChange(e: ChangeEvent<HTMLInputElement>) {
+    const checkbox = e.currentTarget;
+    setTimeout(() => {
+      if (checkbox.checked) {
+        window.addEventListener("click", handleClick, { once: true });
+      }
+    }, 0);
+  }
+
+  function handleClick(e: Event) {
+    const el = e.target as HTMLElement;
+    if (el.id !== `${id}-checkbox` && inputRef.current !== null) {
+      inputRef.current.checked = false;
+    }
+  }
+
   return (
     <div className="relative">
       <input
@@ -22,6 +46,8 @@ export default function Dropdown({
         name={`${id}-checkbox`}
         id={`${id}-checkbox`}
         className="absolute inset-0 opacity-0 peer"
+        onChange={handleChange}
+        ref={inputRef}
       />
       {typeof label === "string" ? (
         <label
