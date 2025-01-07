@@ -20,9 +20,8 @@ export default async function Header() {
         </Suspense>
       </div>
       <Suspense>
-        <Search />
+        <Menu />
       </Suspense>
-      <Menu />
     </header>
   );
 }
@@ -48,6 +47,7 @@ async function Menu() {
         </label>
       </div>
       <nav className="flex gap-4 items-center max-md:fixed max-md:right-0 max-md:z-10 max-md:top-12 max-md:px-8 max-md:py-9 max-md:translate-x-full max-md:flex-col max-md:primary max-md:peer-has-[:checked]:-translate-x-2 max-md:peer-has-[:checked]:shadow-2xl">
+        <Search />
         {user ? (
           <>
             <div
