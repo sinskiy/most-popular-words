@@ -21,33 +21,32 @@ export default function Dropdown({
   labelClassName,
   ...props
 }: DropdownProps) {
-  const inputRef = useRef<HTMLInputElement>(null);
-
+  const wrapperRef = useRef<HTMLDivElement>(null);
   function handleChange(e: ChangeEvent<HTMLInputElement>) {
     const checkbox = e.currentTarget;
-    setTimeout(() => {
-      if (checkbox.checked) {
-        window.addEventListener("click", handleClick, { once: true });
-      }
-    }, 0);
-  }
 
-  function handleClick(e: Event) {
-    const el = e.target as HTMLElement;
-    if (el.id !== `${id}-checkbox` && inputRef.current !== null) {
-      inputRef.current.checked = false;
+    function handleClickOutside(eClick: Event) {
+      if (
+        wrapperRef.current &&
+        !wrapperRef.current.contains(eClick.target as Node)
+      ) {
+        checkbox.checked = false;
+        document.removeEventListener("click", handleClickOutside);
+      }
+    }
+    if (e.currentTarget.checked) {
+      document.addEventListener("click", handleClickOutside);
     }
   }
 
   return (
-    <div className="relative">
+    <div className="relative" ref={wrapperRef}>
       <input
         type="checkbox"
         name={`${id}-checkbox`}
         id={`${id}-checkbox`}
-        className="absolute inset-0 opacity-0 peer"
         onChange={handleChange}
-        ref={inputRef}
+        className="absolute inset-0 opacity-0 peer"
       />
       {typeof label === "string" ? (
         <label
