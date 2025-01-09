@@ -6,6 +6,7 @@ import {
   useRef,
 } from "react";
 import { cn } from "../lib/helpers";
+import useUncheckOnClickOutside from "../hooks/useUncheckOnClickOutside";
 
 interface DropdownProps extends PropsWithChildren, HTMLAttributes<HTMLElement> {
   id: string;
@@ -22,22 +23,9 @@ export default function Dropdown({
   ...props
 }: DropdownProps) {
   const wrapperRef = useRef<HTMLDivElement>(null);
-  function handleChange(e: ChangeEvent<HTMLInputElement>) {
-    const checkbox = e.currentTarget;
+  const inputRef = useRef<HTMLInputElement>(null);
 
-    function handleClickOutside(eClick: Event) {
-      if (
-        wrapperRef.current &&
-        !wrapperRef.current.contains(eClick.target as Node)
-      ) {
-        checkbox.checked = false;
-        document.removeEventListener("click", handleClickOutside);
-      }
-    }
-    if (e.currentTarget.checked) {
-      document.addEventListener("click", handleClickOutside);
-    }
-  }
+  const handleChange = useUncheckOnClickOutside(wrapperRef, inputRef);
 
   return (
     <div className="relative" ref={wrapperRef}>
@@ -46,6 +34,7 @@ export default function Dropdown({
         name={`${id}-checkbox`}
         id={`${id}-checkbox`}
         onChange={handleChange}
+        ref={inputRef}
         className="absolute inset-0 opacity-0 peer"
       />
       {typeof label === "string" ? (
