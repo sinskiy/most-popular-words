@@ -11,7 +11,7 @@ export async function setWordDetails(
   if (!username) return { message: "Must be logged in" };
 
   try {
-    const { translations, definitions, examples } = packageDetails(formData);
+    const { translations, definitions, examples } = packDetials(formData);
     await db.query(
       `INSERT INTO user_words (username, word, translations, definitions, examples)
          VALUES ($1, $2, $3, $4, $5)
@@ -76,7 +76,7 @@ export async function setWordDetailsWithKnowledge(
   if (!username) return { message: "Must be logged in" };
 
   try {
-    const { translations, definitions, examples } = packageDetails(formData);
+    const { translations, definitions, examples } = packDetials(formData);
 
     await db.query(
       `INSERT INTO user_words (username, word, translations, definitions, examples, knowledge)
@@ -105,7 +105,7 @@ export async function setWordDetailsWithKnowledge(
   }
 }
 
-function packageDetails(details: FormData) {
+function packDetials(details: FormData) {
   const translations: string[] = [],
     definitions: string[] = [],
     examples: string[] = [];
