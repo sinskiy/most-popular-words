@@ -41,6 +41,7 @@ export default async function Menu() {
             </div>
             <HeaderLink href="/learn">learn</HeaderLink>
             <HeaderLink href="/saved">saved</HeaderLink>
+            <HeaderLink href="/decks">decks</HeaderLink>
             <LogOut />
           </>
         ) : (
