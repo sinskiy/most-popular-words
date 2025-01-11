@@ -47,6 +47,31 @@ export async function addDeck(
   }
 }
 
+export async function deleteDeck(
+  { username, id }: { username: string; id: string },
+  state: unknown,
+  formData: FormData
+) {
+  if (!username) return { message: "Must be logged in" };
+
+  try {
+    const deleted = await db.query(
+      "DELETE FROM decks WHERE id = $1 AND username = $2 RETURNING *",
+      [id, username]
+    );
+    if (!deleted.rowCount) {
+      throw new Error();
+    }
+
+    revalidateTag("decks");
+
+    return { success: true };
+  } catch (e) {
+    console.log(e);
+    return { message: "Couldn't delete" };
+  }
+}
+
 const AddDeckSchema = z
   .object({
     name: z.string().nonempty().max(255),
