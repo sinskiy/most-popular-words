@@ -82,6 +82,7 @@ export default function AddDeck({
             </button>
           </section>
           {state?.message && <p>{state.message}</p>}
+          {/* Dynamic errors without name error */}
           {state?.errors &&
             Object.values(state.errors).length -
               Number(state.errors?.name !== undefined) >
