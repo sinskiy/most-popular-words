@@ -7,7 +7,7 @@ export default function DeleteDeck({
   id,
   username,
 }: {
-  id: string;
+  id: number;
   username: string;
 }) {
   const [state, action, pending] = useActionState(

@@ -11,3 +11,16 @@ export const getDecks = cacheDb(
     ),
   ["decks"]
 );
+
+export const getDeckWords = cacheDb(
+  async (id: number) =>
+    await queryThrowError(
+      "Couldn't get deck words",
+      {
+        text: "SELECT word FROM deck_words WHERE deck_id = $1",
+        rowMode: "array",
+      },
+      [id]
+    ),
+  ["decks"]
+);

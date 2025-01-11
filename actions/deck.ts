@@ -6,7 +6,7 @@ import { Deck } from "../types/deck";
 import { revalidateTag } from "next/cache";
 
 export async function addDeck(
-  { username }: { username: string },
+  { username, edit, id }: { username: string; edit?: boolean; id?: number },
   state: unknown,
   formData: FormData
 ) {
@@ -23,17 +23,27 @@ export async function addDeck(
   const { name, ...words } = validatedFields.data;
 
   try {
-    const deckQuery = await db.query<Deck>(
-      "INSERT INTO decks (name, username) VALUES ($1, $2) RETURNING *",
-      [name, username]
-    );
-    const [deck] = deckQuery.rows;
+    let deckId: number;
+    if (edit) {
+      const deckQuery = await db.query<Deck>(
+        "UPDATE decks SET name = $1 WHERE id = $2 RETURNING id",
+        [name, id]
+      );
+      await db.query("DELETE FROM deck_words WHERE deck_id = $1", [id]);
+      deckId = deckQuery.rows[0].id;
+    } else {
+      const deckQuery = await db.query<Deck>(
+        "INSERT INTO decks (name, username) VALUES ($1, $2) RETURNING id",
+        [name, username]
+      );
+      deckId = deckQuery.rows[0].id;
+    }
 
     for (const word in words) {
       if (word.includes("$ACTION")) continue;
 
       await db.query("INSERT INTO deck_words (deck_id, word) VALUES ($1, $2)", [
-        deck.id,
+        deckId,
         word,
       ]);
     }
@@ -43,12 +53,12 @@ export async function addDeck(
     return { success: true };
   } catch (e) {
     console.log(e);
-    return { message: "Couldn't add" };
+    return { message: `Couldn't ${edit ? "edit" : "add"}` };
   }
 }
 
 export async function deleteDeck(
-  { username, id }: { username: string; id: string },
+  { username, id }: { username: string; id: number },
   state: unknown,
   formData: FormData
 ) {

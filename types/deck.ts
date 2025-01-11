@@ -1,5 +1,5 @@
 export interface Deck {
-  id: string;
+  id: number;
   name: string;
   username: string;
 }
