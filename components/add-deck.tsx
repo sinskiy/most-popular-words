@@ -7,12 +7,20 @@ import { addDeck } from "../actions/deck";
 export default function AddDeck({
   words,
   username,
+  edit = false,
+  id,
+  name,
+  selectedWords,
 }: {
   words: SavedWord[];
   username: string;
+  edit?: boolean;
+  id?: number;
+  name?: string;
+  selectedWords?: string[];
 }) {
   const [state, action, pending] = useActionState(
-    addDeck.bind(null, { username }),
+    addDeck.bind(null, { username, edit, id }),
     undefined
   );
 
@@ -20,7 +28,7 @@ export default function AddDeck({
     if (state?.success) {
       dialogRef.current?.close();
     }
-  }, [state?.success]);
+  }, [state]);
 
   const dialogRef = useRef<HTMLDialogElement>(null);
 
@@ -30,13 +38,14 @@ export default function AddDeck({
         ref={dialogRef}
         className="neutral px-10 py-8 open:flex flex-col gap-4"
       >
-        <h2 className="text-2xl font-medium">add deck</h2>
+        <h2 className="text-2xl font-medium">{edit ? "edit" : "add"} deck</h2>
         <form className="flex flex-col gap-6" action={action}>
           <section className="flex flex-col gap-2">
             <InputField
               type="text"
               id="name"
               error={state?.errors?.name}
+              defaultValue={name}
               small
             />
             <fieldset>
@@ -51,6 +60,9 @@ export default function AddDeck({
                         type="checkbox"
                         name={word.value}
                         id={word.value}
+                        defaultChecked={
+                          selectedWords && selectedWords.includes(word.value)
+                        }
                         className="opacity-0 absolute inset-0 peer"
                       />
                       <label
@@ -91,7 +103,7 @@ export default function AddDeck({
         </form>
       </dialog>
       <button className="button" onClick={() => dialogRef.current?.showModal()}>
-        add deck
+        {edit ? "edit" : "add"} deck
       </button>
     </>
   );

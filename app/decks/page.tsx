@@ -2,9 +2,11 @@ import { getSaved } from "../../actions/saved";
 import { getUser } from "../../actions/auth";
 import ErrorPage from "../../components/error-page";
 import AddDeck from "../../components/add-deck";
-import { getDecks } from "../../actions/get-decks";
+import { getDecks, getDeckWords } from "../../actions/get-decks";
 import Link from "next/link";
 import DeleteDeck from "../../components/delete-deck";
+import { SavedWord } from "../../types/word";
+import { Suspense } from "react";
 
 export default async function Page() {
   const user = await getUser();
@@ -33,6 +35,14 @@ export default async function Page() {
                 learn
               </Link>
               <DeleteDeck id={deck.id} username={user.username} />
+              <Suspense>
+                <WithSelectedWords
+                  username={user.username}
+                  words={savedWordsQuery.rows}
+                  id={deck.id}
+                  name={deck.name}
+                />
+              </Suspense>
             </li>
           ))
         ) : (
@@ -42,5 +52,31 @@ export default async function Page() {
         )}
       </ul>
     </>
+  );
+}
+
+async function WithSelectedWords({
+  username,
+  words,
+  id,
+  name,
+}: {
+  username: string;
+  words: SavedWord[];
+  id: number;
+  name: string;
+}) {
+  const selectedWords = await getDeckWords(id);
+  return (
+    <AddDeck
+      username={username}
+      words={words}
+      edit
+      id={id}
+      name={name}
+      selectedWords={selectedWords.rows.flatMap((word) =>
+        word.map((value: string) => value)
+      )}
+    />
   );
 }
