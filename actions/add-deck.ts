@@ -30,8 +30,6 @@ export async function addDeck(
     const [deck] = deckQuery.rows;
 
     for (const word in words) {
-      console.log(word, deck);
-
       if (word.includes("$ACTION")) continue;
 
       await db.query("INSERT INTO deck_words (deck_id, word) VALUES ($1, $2)", [
@@ -53,4 +51,9 @@ const AddDeckSchema = z
   .object({
     name: z.string().nonempty().max(255),
   })
-  .passthrough();
+  .passthrough()
+  .refine(
+    ({ name, ...words }) =>
+      Object.keys(words).filter((word) => !word.includes("$ACTION")).length > 0,
+    { message: "Choose at least one word", path: [""] }
+  );
