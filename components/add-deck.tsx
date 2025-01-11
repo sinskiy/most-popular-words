@@ -2,7 +2,7 @@
 import { useActionState, useEffect, useRef } from "react";
 import { SavedWord } from "../types/word";
 import InputField from "../ui/input-field";
-import { addDeck } from "../actions/add-deck";
+import { addDeck } from "../actions/deck";
 
 export default function AddDeck({
   words,
