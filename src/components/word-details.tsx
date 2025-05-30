@@ -89,14 +89,16 @@ const initialAdded = {
   examples: [],
 };
 
+interface WordDetailsBaseProps extends PropsWithChildren {
+  word: QueriedWord;
+  actionState: UseActionState;
+}
+
 export function WordDetailsBase({
   word,
   actionState,
   children,
-}: {
-  word: QueriedWord;
-  actionState: UseActionState;
-} & PropsWithChildren) {
+}: WordDetailsBaseProps) {
   const [state, action, pending] = actionState;
   const [added, setAdded] = useState<Record<string, string[]>>(initialAdded);
   function add(key: string) {

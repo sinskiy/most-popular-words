@@ -6,7 +6,6 @@ import { QueriedWord } from "@/words/queries";
 import { useActionState } from "react";
 
 interface SaveProps {
-  // TODO: update user type
   user: false | QueriedUser;
   word: QueriedWord;
   cn?: string;

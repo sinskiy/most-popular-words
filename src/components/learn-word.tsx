@@ -38,7 +38,6 @@ function getFilteredWords(words: QueriedWord[], prevWord: string | false) {
   return filteredWords;
 }
 
-// TODO: where's knowledge?
 export default function LearnWord({ user, words, reverse }: LearnWordProps) {
   const [localWords, setLocalWords] = useState(words);
 
@@ -139,6 +138,15 @@ export default function LearnWord({ user, words, reverse }: LearnWordProps) {
   );
 }
 
+interface LearnWordLoadedProps {
+  reverse: string;
+  word: QueriedWord;
+  showAnswers: boolean;
+  user: QueriedUser;
+  isSuccessOld: boolean;
+  setIsSuccessOld: (value: boolean) => void;
+}
+
 function LearnWordLoaded({
   reverse,
   word,
@@ -146,14 +154,7 @@ function LearnWordLoaded({
   user,
   isSuccessOld,
   setIsSuccessOld,
-}: {
-  reverse: string;
-  word: QueriedWord;
-  showAnswers: boolean;
-  user: QueriedUser;
-  isSuccessOld: boolean;
-  setIsSuccessOld: (value: boolean) => void;
-}) {
+}: LearnWordLoadedProps) {
   const [state, action, pending] = useActionState(
     setWordDetailsWithSeparator.bind(null, {
       userId: user?.id,
@@ -242,16 +243,14 @@ function LearnWordLoaded({
   );
 }
 
-function StringOrArrayOrEmpty({
-  value,
-  type,
-}: {
+interface StringOrArrayOrEmptyProps {
   value: string | string[];
   type: string;
-}) {
+}
+
+function StringOrArrayOrEmpty({ value, type }: StringOrArrayOrEmptyProps) {
   return (
     <>
-      {" "}
       {typeof value === "string" ? (
         value
       ) : value.length > 0 ? (

@@ -4,14 +4,7 @@ import InputField from "@/ui/input-field";
 import { addDeckAction, editDeckAction } from "@/decks/actions";
 import { QueriedWord } from "@/words/queries";
 
-export default function AddDeck({
-  words,
-  userId,
-  edit = false,
-  id,
-  name,
-  selectedWords,
-}:
+type Props =
   | {
       words: QueriedWord[];
       userId: number;
@@ -28,7 +21,16 @@ export default function AddDeck({
       id: number;
       name?: string;
       selectedWords: number[];
-    }) {
+    };
+
+export default function AddDeck({
+  words,
+  userId,
+  edit = false,
+  id,
+  name,
+  selectedWords,
+}: Props) {
   const [state, action, pending] = useActionState(
     edit && id
       ? editDeckAction.bind(null, { userId, id, prevWordIds: selectedWords })

@@ -3,13 +3,12 @@
 import { deleteDeckAction } from "@/decks/actions";
 import { useActionState } from "react";
 
-export default function DeleteDeck({
-  id,
-  userId,
-}: {
+interface Props {
   id: number;
   userId: number;
-}) {
+}
+
+export default function DeleteDeck({ id, userId }: Props) {
   const [state, action, pending] = useActionState(
     deleteDeckAction.bind(null, { id, userId }),
     undefined
