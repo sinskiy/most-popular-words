@@ -18,7 +18,7 @@ export default async function Learn({ searchParams }: PageProps) {
   // TODO: change to ignore language
   const skipLanguage = params["skip-language"] ?? "false";
   const reverse = (params.reverse ?? "false") as string;
-  const deck = params.deck as string | undefined;
+  const deckId = params["deck-id"] as string | undefined;
 
   return (
     <main className="flex flex-col gap-8">
@@ -41,6 +41,7 @@ export default async function Learn({ searchParams }: PageProps) {
               knowledge: "NO_KNOWLEDGE_FILTER",
               saved: true,
               sort: "default",
+              deckId: deckId ? Number(deckId) : undefined,
             })
           }
           reverse={reverse}
@@ -50,10 +51,10 @@ export default async function Learn({ searchParams }: PageProps) {
       )}
       <div className="flex gap-4">
         <Link href="/decks" className="text-yellow-500 w-fit">
-          {deck ? "change the" : "choose a"} deck
+          {deckId ? "change the" : "choose a"} deck
         </Link>
         {/* TODO: improve wording */}
-        {deck && <RemoveChosenDeck />}
+        {deckId && <RemoveChosenDeck />}
       </div>
     </main>
   );

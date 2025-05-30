@@ -25,6 +25,7 @@ export async function queryWords({
   knowledge,
   saved,
   search,
+  deckId,
 }: WordsQuery) {
   const querySort = buildQuerySort(sort);
   return await queryWithCustomError("Couldn't get words", () =>
@@ -34,6 +35,7 @@ export async function queryWords({
       knowledge,
       saved,
       search,
+      deckId,
     })
       .select(({ fn }) => [
         "word.id",
@@ -81,6 +83,7 @@ interface WordsQueryBase {
   knowledge: Record<Knowledge, boolean> | "NO_KNOWLEDGE_FILTER";
   saved: boolean;
   search: string;
+  deckId?: number;
 }
 
 function wordsQueryBase({
@@ -89,6 +92,7 @@ function wordsQueryBase({
   knowledge,
   saved,
   search,
+  deckId,
 }: WordsQueryBase) {
   const queryKnowledge = buildQueryKnowledge(knowledge);
   let query = kysely
@@ -139,6 +143,13 @@ function wordsQueryBase({
   if (search) {
     // TODO: fuzzy search
     query = query.where("word.value", "like", `%${search}%`);
+  }
+  if (deckId) {
+    query = query.innerJoin("deck_word", (join) =>
+      join
+        .onRef("deck_word.word_id", "=", "word.id")
+        .on("deck_word.deck_id", "=", deckId)
+    );
   }
   return query;
 }

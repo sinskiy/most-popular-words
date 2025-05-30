@@ -37,7 +37,7 @@ export default async function Page() {
             >
               <p className="text-xl font-medium">{deck.name}</p>
               <Link
-                href={`/learn?deck=${deck.name}`}
+                href={`/learn?deck-id=${deck.id}`}
                 className="text-yellow-500"
               >
                 learn

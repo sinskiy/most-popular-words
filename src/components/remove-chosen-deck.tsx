@@ -9,7 +9,7 @@ export default function RemoveChosenDeck() {
 
   function removeDeck() {
     const params = new URLSearchParams(searchParams);
-    params.delete("deck");
+    params.delete("deck-id");
     router.replace(`${pathname}?${params}`);
   }
   return (
