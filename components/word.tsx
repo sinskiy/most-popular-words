@@ -1,14 +1,14 @@
 import Link from "next/link";
 import { cn } from "../lib/helpers";
 import { User } from "../types/user";
-import { type Word } from "../types/word";
 import Save from "./save";
 import WordDetails from "./word-details";
 
 interface WordProps {
   user: false | User;
   rank: number;
-  word: Word;
+  // TODO: fix any word type being unknown
+  word: any;
 }
 
 export default async function Word({ user, rank, word }: WordProps) {
@@ -37,10 +37,7 @@ export default async function Word({ user, rank, word }: WordProps) {
         </span>
       </p>
       <p>
-        <span className="font-semibold">
-          {(word.percentage * 100).toFixed(2)}
-        </span>
-        %
+        <span className="font-semibold">{word.percentage.toFixed(2)}</span>%
       </p>
       {user && (
         <>

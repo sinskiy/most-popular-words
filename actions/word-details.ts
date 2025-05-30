@@ -1,26 +1,24 @@
 "use server";
 
 import { revalidateTag } from "next/cache";
-import db from "../configs/pg";
+import prisma from "../configs/prisma";
+import { Knowledge } from "../generated/prisma";
 
 export async function setWordDetails(
-  { username, word }: { username: string | false; word: string },
+  // TODO: standardize usage of userId + word as string and user + word as object
+  { userId, wordId }: { userId: number | false; wordId: number },
   state: unknown,
   formData: FormData
 ) {
-  if (!username) return { message: "Must be logged in" };
+  if (!userId) return { message: "Must be logged in" };
 
   try {
     const { translations, definitions, examples } = packDetials(formData);
-    await db.query(
-      `INSERT INTO user_words (username, word, translations, definitions, examples)
-         VALUES ($1, $2, $3, $4, $5)
-         ON CONFLICT (username, word) DO UPDATE SET
-            translations = EXCLUDED.translations,
-            definitions = EXCLUDED.definitions,
-            examples = EXCLUDED.examples`,
-      [username, word, translations, definitions, examples]
-    );
+    await prisma.userWord.upsert({
+      where: { userId_wordId: { userId, wordId } },
+      update: { translations, definitions, examples },
+      create: { userId, wordId, translations, definitions, examples },
+    });
 
     revalidateTag("words");
 
@@ -32,26 +30,22 @@ export async function setWordDetails(
 }
 
 export async function setWordDetailsWithSeparator(
-  { username, word }: { username: string | false; word: string },
+  { userId, wordId }: { userId: number | false; wordId: number },
   state: unknown,
   formData: FormData
 ) {
-  if (!username) return { message: "Must be logged in" };
+  if (!userId) return { message: "Must be logged in" };
 
   try {
     const translations = (formData.get("translations") as string).split(", ");
     const definitions = (formData.get("definitions") as string).split(", ");
     const examples = (formData.get("examples") as string).split(", ");
 
-    await db.query(
-      `INSERT INTO user_words (username, word, translations, definitions, examples)
-         VALUES ($1, $2, $3, $4, $5)
-         ON CONFLICT (username, word) DO UPDATE SET
-            translations = EXCLUDED.translations,
-            definitions = EXCLUDED.definitions,
-            examples = EXCLUDED.examples`,
-      [username, word, translations, definitions, examples]
-    );
+    await prisma.userWord.upsert({
+      where: { userId_wordId: { userId, wordId } },
+      update: { translations, examples, definitions },
+      create: { userId, wordId, translations, definitions, examples },
+    });
 
     revalidateTag("words");
 
@@ -64,37 +58,33 @@ export async function setWordDetailsWithSeparator(
 
 export async function setWordDetailsWithKnowledge(
   {
-    username,
-    word,
+    userId,
+    wordId,
   }: {
-    username: string;
-    word: string;
+    userId: number;
+    wordId: number;
   },
   state: unknown,
   formData: FormData
 ) {
-  if (!username) return { message: "Must be logged in" };
+  if (!userId) return { message: "Must be logged in" };
 
   try {
     const { translations, definitions, examples } = packDetials(formData);
+    const knowledge = formData.get("knowledge") as Knowledge;
 
-    await db.query(
-      `INSERT INTO user_words (username, word, translations, definitions, examples, knowledge)
-         VALUES ($1, $2, $3, $4, $5, $6)
-         ON CONFLICT (username, word) DO UPDATE SET
-            translations = EXCLUDED.translations,
-            definitions = EXCLUDED.definitions,
-            examples = EXCLUDED.examples,
-            knowledge = EXCLUDED.knowledge`,
-      [
-        username,
-        word,
+    await prisma.userWord.upsert({
+      where: { userId_wordId: { userId, wordId } },
+      update: { translations, definitions, examples, knowledge },
+      create: {
+        userId,
+        wordId,
         translations,
         definitions,
         examples,
-        formData.get("knowledge"),
-      ]
-    );
+        knowledge,
+      },
+    });
 
     revalidateTag("words");
 

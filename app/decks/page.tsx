@@ -1,12 +1,11 @@
-import { getSaved } from "../../actions/saved";
 import { getUser } from "../../actions/auth";
 import ErrorPage from "../../components/error-page";
 import AddDeck from "../../components/add-deck";
 import { getDecks, getDeckWords } from "../../actions/get-decks";
 import Link from "next/link";
 import DeleteDeck from "../../components/delete-deck";
-import { SavedWord } from "../../types/word";
 import { Suspense } from "react";
+import { getGroupedWords } from "../../actions/words";
 
 export default async function Page() {
   const user = await getUser();
@@ -14,15 +13,25 @@ export default async function Page() {
     return <ErrorPage title={401}>Unauthorized</ErrorPage>;
   }
 
-  const savedWordsQuery = await getSaved(0, user?.username);
-  const decksQuery = await getDecks(user.username);
+  // TODO: make search non-required
+  // TODO: fix any
+  const savedWords: any[] = await getGroupedWords({
+    offset: 0,
+    knowledge: false,
+    language: "NO_LANGUAGE_FILTER",
+    saved: true,
+    search: "",
+    sort: ["occurred_word.occurrences"],
+    userId: user.id,
+  });
+  const decks: any[] = await getDecks(user.id);
 
   return (
     <>
-      <AddDeck username={user.username} words={savedWordsQuery.rows} />
+      <AddDeck userId={user.id} words={savedWords} />
       <ul role="list" className="flex gap-2 flex-wrap">
-        {decksQuery.rows.length > 0 ? (
-          decksQuery.rows.map((deck) => (
+        {decks.length > 0 ? (
+          decks.map((deck) => (
             <li
               key={deck.id}
               className="neutral px-8 py-4 flex flex-col gap-2 flex-grow max-w-64 truncate"
@@ -34,11 +43,11 @@ export default async function Page() {
               >
                 learn
               </Link>
-              <DeleteDeck id={deck.id} username={user.username} />
+              <DeleteDeck id={deck.id} userId={user.id} />
               <Suspense>
                 <WithSelectedWords
-                  username={user.username}
-                  words={savedWordsQuery.rows}
+                  userId={user.id}
+                  words={savedWords}
                   id={deck.id}
                   name={deck.name}
                 />
@@ -56,27 +65,25 @@ export default async function Page() {
 }
 
 async function WithSelectedWords({
-  username,
+  userId,
   words,
   id,
   name,
 }: {
-  username: string;
-  words: SavedWord[];
+  userId: number;
+  words: any[];
   id: number;
   name: string;
 }) {
-  const selectedWords = await getDeckWords(id);
+  const selectedWords: any[] = await getDeckWords(id);
   return (
     <AddDeck
-      username={username}
+      userId={userId}
       words={words}
       edit
       id={id}
       name={name}
-      selectedWords={selectedWords.rows.flatMap((word) =>
-        word.map((value: string) => value)
-      )}
+      selectedWords={selectedWords.map(({ word }) => word.id)}
     />
   );
 }

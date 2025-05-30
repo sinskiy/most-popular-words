@@ -1,3 +1,5 @@
+export const ITEMS_PER_PAGE = 10;
+
 export function getPages(curr: number, end: number) {
   const pages: number[] = [1];
 
@@ -20,4 +22,12 @@ export function getPages(curr: number, end: number) {
     next = curr < end;
 
   return { prev, pages, next };
+}
+
+export function getTotalPages(items: number) {
+  return Math.ceil(items / ITEMS_PER_PAGE);
+}
+
+export function getOffset(page: number) {
+  return (page - 1) * ITEMS_PER_PAGE;
 }

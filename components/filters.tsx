@@ -5,7 +5,7 @@ import Dropdown from "../ui/dropdown";
 import Form from "../ui/form";
 import InputField from "../ui/input-field";
 import { setParams } from "../lib/helpers";
-import { knowledge, types } from "../types/word";
+import { knowledge, sourceTypes } from "../types/word";
 import { User } from "../types/user";
 
 interface FiltersProps {
@@ -53,7 +53,7 @@ export default function Filters({ user }: FiltersProps) {
         <fieldset>
           <legend className="text-lg font-semibold mb-0.5">type</legend>
           <div>
-            {types.map((type) => (
+            {sourceTypes.map((type) => (
               <div key={type} className="flex gap-3">
                 <input
                   type="radio"

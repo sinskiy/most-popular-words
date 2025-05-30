@@ -2,12 +2,12 @@
 import { FormState, UserFormSchema } from "../lib/definitions";
 import bcrypt from "bcryptjs";
 import { redirect } from "next/navigation";
-import db from "../configs/pg";
 import jwt, { JwtPayload } from "jsonwebtoken";
 import { cookies } from "next/headers";
 import { User } from "../types/user";
 import { getErrorMessage } from "../lib/helpers";
 import { revalidateTag, unstable_cache } from "next/cache";
+import prisma from "../configs/prisma";
 
 type AuthFormState = FormState<{
   username?: string[];
@@ -31,25 +31,16 @@ export async function signUp(
   const { username, password } = validatedFields.data;
 
   try {
-    const userWithUsername = await db.query(
-      "SELECT username FROM users WHERE username = $1",
-      [username]
-    );
-    if (userWithUsername?.rowCount !== 0) {
+    const userWithUsername = await prisma.user.findUnique({
+      select: { username: true },
+      where: { username },
+    });
+    if (userWithUsername != null) {
       return { message: "User with this username already exists" };
     }
 
     const hashedPassword = await bcrypt.hash(password, 10);
-    const data = await db.query(
-      "INSERT INTO users (username, password) VALUES ($1, $2) RETURNING *",
-      [username, hashedPassword]
-    );
-
-    const user = data.rows[0];
-
-    if (!user) {
-      return { message: "Couldn't create user" };
-    }
+    await prisma.user.create({ data: { username, password: hashedPassword } });
   } catch (e) {
     return getErrorMessage(e);
   }
@@ -74,15 +65,10 @@ export async function logIn(
   const { username, password } = validatedFields.data;
 
   try {
-    const userWithUsername = await db.query(
-      "SELECT * FROM users WHERE username = $1",
-      [username]
-    );
-    if (userWithUsername?.rowCount === 0) {
+    const user = await prisma.user.findUnique({ where: { username } });
+    if (user == null) {
       return { message: "User with this username doesn't exist" };
     }
-
-    const user = userWithUsername.rows[0];
 
     const passwordMatch = await bcrypt.compare(password, user.password);
     if (!passwordMatch) {
@@ -111,12 +97,12 @@ export async function logIn(
   redirect("/");
 }
 
-export const getUserFromDb = unstable_cache(
+const getUserFromDb = unstable_cache(
   async (username: string) =>
-    await db.query(
-      "SELECT username, streak, last_streak FROM users WHERE username = $1",
-      [username]
-    ),
+    await prisma.user.findUnique({
+      select: { id: true, username: true, streak: true, lastStreak: true },
+      where: { username },
+    }),
   ["user"],
   { revalidate: 60 * 60, tags: ["user"] }
 );
@@ -131,9 +117,8 @@ export async function getUser(): Promise<User | false> {
       process.env.JWT_SECRET!
     ) as JwtPayload;
 
-    const data = await getUserFromDb(username);
+    const user = await getUserFromDb(username);
 
-    const user = data.rows[0];
     if (!user) {
       return false;
     }

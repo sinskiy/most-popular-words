@@ -1,37 +1,48 @@
 "use server";
 
-import { SavedWord } from "../types/word";
-import db from "../configs/pg";
 import { redirect } from "next/navigation";
 import { User } from "../types/user";
 import { revalidateTag } from "next/cache";
+import prisma from "../configs/prisma";
+import { SavedWord } from "../generated/prisma";
 
 export async function updateKnowledge({
   user,
   words,
 }: {
   user: User;
-  words: SavedWord[];
+  words: (SavedWord & { changed?: true })[];
 }) {
   try {
     if (
-      Date.now() - new Date(user.last_streak).getTime() >
+      Date.now() - new Date(user.lastStreak).getTime() >
       1000 * 60 * 60 * 24
     ) {
-      await db.query(
-        "UPDATE users SET streak = $1, last_streak = $2 WHERE username = $3",
-        [user.streak + 1, new Date().toISOString(), user.username]
-      );
+      await prisma.user.update({
+        data: { streak: user.streak + 1, lastStreak: new Date() },
+        where: { id: user.id },
+      });
       revalidateTag("user");
     }
+    const wordsToInsert = [];
     for (const word of words) {
-      if ("changed" in word) {
-        await db.query(
-          "INSERT INTO user_words (username, word, knowledge) VALUES ($1, $2, $3) ON CONFLICT (username, word) DO UPDATE SET knowledge = EXCLUDED.knowledge",
-          [user.username, word.value, word.knowledge]
-        );
-      }
+      if (word.changed === true)
+        wordsToInsert.push({
+          userId: user.id,
+          wordId: word.id,
+          knowledge: word.knowledge,
+        });
     }
+    await prisma.$transaction(
+      wordsToInsert.map(({ userId, wordId, knowledge }) =>
+        prisma.userWord.upsert({
+          create: { userId, wordId, knowledge },
+          update: { knowledge },
+          // TODO: write a blog post about this
+          where: { userId_wordId: { userId, wordId } },
+        })
+      )
+    );
   } catch (e) {
     console.log(e);
     return { message: "Couldn't update" };

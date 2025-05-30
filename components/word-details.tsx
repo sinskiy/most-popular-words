@@ -6,7 +6,7 @@ import {
   setWordDetailsWithKnowledge,
 } from "../actions/word-details";
 import { User } from "../types/user";
-import { knowledge, SavedWord, Word } from "../types/word";
+import { knowledge } from "../types/word";
 import Dropdown from "../ui/dropdown";
 import Form from "../ui/form";
 import InputField from "../ui/input-field";
@@ -14,14 +14,15 @@ import { UseActionState } from "../types/action";
 
 interface WordDetailsProps {
   user: User | false;
-  word: Word;
+  // TODO: fix word type being unknown
+  word: any;
 }
 
 export default function WordDetails({ user, word }: WordDetailsProps) {
   const actionState = useActionState(
     setWordDetails.bind(null, {
-      username: user && user.username,
-      word: word.value,
+      userId: user && user.id,
+      wordId: word.id,
     }),
     undefined
   );
@@ -51,12 +52,13 @@ export function WordDetailsWithKnowledge({
   word,
 }: {
   user: User;
-  word: SavedWord;
+  // TODO: fix word type being unnown
+  word: any;
 }) {
   const actionState = useActionState(
     setWordDetailsWithKnowledge.bind(null, {
-      username: user && user.username,
-      word: word.value,
+      userId: user && user.id,
+      wordId: word.id,
     }),
     undefined
   );
@@ -91,7 +93,8 @@ export function WordDetailsBase({
   actionState,
   children,
 }: {
-  word: Word;
+  // TODO: fix
+  word: any;
   actionState: UseActionState;
 } & PropsWithChildren) {
   const [state, action, pending] = actionState;
@@ -133,6 +136,7 @@ export function WordDetailsBase({
                       ).value = "")
                     }
                   >
+                    {/* TODO: don't submit on delete click */}
                     delete
                   </button>
                 </div>

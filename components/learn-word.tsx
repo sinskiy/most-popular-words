@@ -150,8 +150,8 @@ function LearnWordLoaded({
 }) {
   const [state, action, pending] = useActionState(
     setWordDetailsWithSeparator.bind(null, {
-      username: user.username,
-      word: word.value,
+      userId: user.id,
+      wordId: word.id,
     }),
     undefined
   );

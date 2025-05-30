@@ -1,29 +1,42 @@
 import { getUser } from "../../actions/auth";
-import { getSaved, getSavedCount } from "../../actions/saved";
 import Pagination from "../../ui/pagination";
 import Words from "../../components/words";
-import { getTotalPages, ITEMS_PER_PAGE } from "../../lib/db";
 import { PageProps } from "../../types/page";
+import { getOffset, getTotalPages } from "../../lib/pages";
+import { getGroupedWords, getWordsCount } from "../../actions/words";
 
 export default async function Saved({ searchParams }: PageProps) {
   const params = await searchParams;
+  const search = (params.search ?? "") as string;
   const page = Number(params.page || 1);
 
   const user = await getUser();
 
-  const offset = (page - 1) * ITEMS_PER_PAGE;
+  const offset = getOffset(page);
+
+  const getWordsBaseParams = {
+    search,
+    language: "NO_LANGUAGE_FILTER",
+    saved: true,
+    knowledge: false,
+    userId: user ? user.id : null,
+  } as const;
+  const words = await getGroupedWords({
+    ...getWordsBaseParams,
+    sort: ["occurred_word.occurrences"],
+    offset,
+  });
+  // TODO: fix any
+  const wordsCount: any = await getWordsCount(getWordsBaseParams);
 
   return (
     <main className="flex flex-col gap-2">
       {user ? (
         <>
-          <Words
-            user={user}
-            list={(await getSaved(offset, user.username)).rows}
-          />
+          <Words user={user} list={words} />
           <Pagination
             curr={page}
-            end={getTotalPages(await getSavedCount(user.username))}
+            end={getTotalPages(wordsCount[0]?.count ?? 0)}
           />
         </>
       ) : (

@@ -1,13 +1,15 @@
 import { Suspense } from "react";
 import { getUser } from "../../../actions/auth";
 import cacheDb from "../../../lib/cache-db";
-import queryThrowError from "../../../lib/query-throw-error";
+import queryThrowError, { queryWithCustomError } from "../../../lib/query-throw-error";
 import { SavedWord } from "../../../types/word";
 import Save from "../../../components/save";
 import { WordDetailsWithKnowledge } from "../../../components/word-details";
+import prisma from "../../../configs/prisma";
 
 const getWord = cacheDb(
   async (value: string, username: string | false) =>
+    await queryWithCustomError("Couldn't get words", () => prisma.userWord.find)
     await queryThrowError<SavedWord>(
       "Couldn't get words",
       `SELECT value, occurrences, percentage, saved, source, type, translations, definitions, examples, knowledge
@@ -43,10 +45,11 @@ async function QueriedWordDetails({ value }: { value: string }) {
   return (
     <>
       <Save user={user} word={word} cn="w-fit !inline ml-4" />
-      <p>
+      {/* source and type are only for partial entries */}
+      {/* <p>
         type: <span className="font-semibold">{word.type}</span>, source:{" "}
         <span className="font-semibold">{word.source}</span>
-      </p>
+      </p> */}
       <p className="mt-4">
         <span className="font-semibold">{word.occurrences} </span>
         occurrence

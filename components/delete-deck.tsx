@@ -5,13 +5,13 @@ import { deleteDeck } from "../actions/deck";
 
 export default function DeleteDeck({
   id,
-  username,
+  userId,
 }: {
   id: number;
-  username: string;
+  userId: number;
 }) {
   const [state, action, pending] = useActionState(
-    deleteDeck.bind(null, { id, username }),
+    deleteDeck.bind(null, { id, userId }),
     undefined
   );
   return (

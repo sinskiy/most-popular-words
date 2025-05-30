@@ -1,5 +1,6 @@
 export interface User {
+  id: number;
   username: string;
   streak: number;
-  last_streak: string;
+  lastStreak: Date;
 }

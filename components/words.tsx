@@ -1,9 +1,9 @@
 import { User } from "../types/user";
-import { type Word as IWord } from "../types/word";
 import Word from "./word";
 
 interface WordsProps {
-  list: IWord[];
+  // TODO: fix list type being unknown
+  list: any[];
   user: false | User;
 }
 

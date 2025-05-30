@@ -1,0 +1,123 @@
+generator client {
+  provider = "prisma-client-js"
+  output   = "../generated/prisma"
+}
+
+generator kysely {
+  provider = "prisma-kysely"
+  output   = "../generated/kysely"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model User {
+  id         Int         @id @default(autoincrement())
+  username   String      @unique @db.VarChar(255)
+  password   String      @db.VarChar(255)
+  streak     Int         @default(0)
+  lastStreak DateTime    @default(dbgenerated("'1970-01-01 00:00:01'::timestamp without time zone")) @map("last_streak") @db.Timestamp(6)
+  savedWords SavedWord[]
+  userWords  UserWord[]
+  decks      Deck[]
+
+  @@map("user")
+}
+
+enum Languages {
+  ENGLISH @map("english")
+  RUSSIAN @map("russian")
+
+  @@map("languages")
+}
+
+enum SourceType {
+  BOOK    @map("book")
+  DOCS    @map("docs")
+  ARTICLE @map("article")
+
+  @@map("source_type")
+}
+
+model Word {
+  id           Int            @id @default(autoincrement())
+  value        String         @db.VarChar(255)
+  language     Languages      @default(ENGLISH)
+  occuredWords OccurredWord[]
+  savedWords   SavedWord[]
+  userWords    UserWord[]
+  deckWords    DeckWord[]
+
+  @@unique([value, language])
+  @@map("word")
+}
+
+model OccurredWord {
+  id          Int        @id @default(autoincrement())
+  wordId      Int        @map("word_id")
+  word        Word       @relation(fields: [wordId], references: [id], onDelete: Cascade)
+  source      String     @db.VarChar(255)
+  sourceType  SourceType @default(BOOK) @map("source_type")
+  occurrences Int
+
+  @@unique([wordId, source])
+  @@map("occurred_word")
+}
+
+model SavedWord {
+  id     Int  @id @default(autoincrement())
+  userId Int  @map("user_id")
+  user   User @relation(fields: [userId], references: [id], onDelete: Cascade)
+  wordId Int  @map("word_id")
+  word   Word @relation(fields: [wordId], references: [id], onDelete: Cascade)
+
+  @@unique([userId, wordId])
+  @@map("saved_word")
+}
+
+enum Knowledge {
+  AGAIN @map("again")
+  HARD  @map("hard")
+  GOOD  @map("good")
+  EASY  @map("easy")
+
+  @@map("knowledge")
+}
+
+model UserWord {
+  id           Int        @id @default(autoincrement())
+  userId       Int        @map("user_id")
+  user         User       @relation(fields: [userId], references: [id], onDelete: Cascade)
+  wordId       Int        @map("word_id")
+  word         Word       @relation(fields: [wordId], references: [id], onDelete: Cascade)
+  translations String[]   @db.VarChar(255)
+  definitions  String[]   @db.VarChar(255)
+  examples     String[]   @db.VarChar(255)
+  knowledge    Knowledge? @default(AGAIN)
+
+  @@unique([userId, wordId])
+  @@map("user_word")
+}
+
+model Deck {
+  id        Int        @id @default(autoincrement())
+  userId    Int        @map("user_id")
+  user      User       @relation(fields: [userId], references: [id], onDelete: Cascade)
+  name      String     @db.VarChar(255)
+  deckWords DeckWord[]
+
+  @@map("deck")
+}
+
+model DeckWord {
+  id     Int  @id @default(autoincrement())
+  deckId Int  @map("deck_id")
+  deck   Deck @relation(fields: [deckId], references: [id], onDelete: Cascade)
+  wordId Int  @map("word_id")
+  word   Word @relation(fields: [wordId], references: [id], onDelete: Cascade)
+
+  @@unique([deckId, wordId])
+  @@map("deck_word")
+}

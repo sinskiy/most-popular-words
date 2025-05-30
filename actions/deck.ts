@@ -1,16 +1,16 @@
 "use server";
 
 import { z } from "zod";
-import db from "../configs/pg";
-import { Deck } from "../types/deck";
 import { revalidateTag } from "next/cache";
+import prisma from "../configs/prisma";
 
+// TODO: separate into two actions (edit and add)
 export async function addDeck(
-  { username, edit, id }: { username: string; edit?: boolean; id?: number },
+  { userId, edit, id }: { userId: number; edit?: boolean; id?: number },
   state: unknown,
   formData: FormData
 ) {
-  if (!username) return { message: "Must be logged in" };
+  if (!userId) return { message: "Must be logged in" };
 
   const validatedFields = AddDeckSchema.safeParse(Object.fromEntries(formData));
 
@@ -20,33 +20,32 @@ export async function addDeck(
     };
   }
 
-  const { name, ...words } = validatedFields.data;
+  const { name, ...wordIds } = validatedFields.data;
 
   try {
     let deckId: number;
     if (edit) {
-      const deckQuery = await db.query<Deck>(
-        "UPDATE decks SET name = $1 WHERE id = $2 RETURNING id",
-        [name, id]
-      );
-      await db.query("DELETE FROM deck_words WHERE deck_id = $1", [id]);
-      deckId = deckQuery.rows[0].id;
+      const deck = await prisma.deck.update({ where: { id }, data: { name } });
+      deckId = deck.id;
+      // TODO: check why I'm doing this
+      await prisma.deckWord.deleteMany({ where: { id } });
+      // await db.query("DELETE FROM deck_words WHERE deck_id = $1", [id]);
     } else {
-      const deckQuery = await db.query<Deck>(
-        "INSERT INTO decks (name, username) VALUES ($1, $2) RETURNING id",
-        [name, username]
-      );
-      deckId = deckQuery.rows[0].id;
+      const deck = await prisma.deck.create({
+        data: { name, userId },
+        select: { id: true },
+      });
+      deckId = deck.id;
     }
 
-    for (const word in words) {
-      if (word.includes("$ACTION")) continue;
+    const wordsToInsert = [];
 
-      await db.query("INSERT INTO deck_words (deck_id, word) VALUES ($1, $2)", [
-        deckId,
-        word,
-      ]);
+    for (const id in wordIds) {
+      if (!id.includes("$ACTION"))
+        wordsToInsert.push({ deckId, wordId: Number(id) });
     }
+
+    await prisma.deckWord.createMany({ data: wordsToInsert });
 
     revalidateTag("decks");
 
@@ -57,21 +56,17 @@ export async function addDeck(
   }
 }
 
-export async function deleteDeck(
-  { username, id }: { username: string; id: number },
-  state: unknown,
-  formData: FormData
-) {
-  if (!username) return { message: "Must be logged in" };
+export async function deleteDeck({
+  userId,
+  id,
+}: {
+  userId: number;
+  id: number;
+}) {
+  if (!userId) return { message: "Must be logged in" };
 
   try {
-    const deleted = await db.query(
-      "DELETE FROM decks WHERE id = $1 AND username = $2 RETURNING *",
-      [id, username]
-    );
-    if (!deleted.rowCount) {
-      throw new Error();
-    }
+    await prisma.deck.delete({ where: { id, userId } });
 
     revalidateTag("decks");
 
@@ -88,7 +83,8 @@ const AddDeckSchema = z
   })
   .passthrough()
   .refine(
-    ({ name, ...words }) =>
-      Object.keys(words).filter((word) => !word.includes("$ACTION")).length > 0,
+    // eslint-disable-next-line @typescript-eslint/no-unused-vars
+    ({ name, ...wordIds }) =>
+      Object.keys(wordIds).filter((id) => !id.includes("$ACTION")).length > 0,
     { message: "Choose at least one word", path: [""] }
   );

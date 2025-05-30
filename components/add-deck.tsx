@@ -1,26 +1,26 @@
 "use client";
 import { useActionState, useEffect, useRef } from "react";
-import { SavedWord } from "../types/word";
 import InputField from "../ui/input-field";
 import { addDeck } from "../actions/deck";
 
 export default function AddDeck({
   words,
-  username,
+  userId,
   edit = false,
   id,
   name,
   selectedWords,
 }: {
-  words: SavedWord[];
-  username: string;
+  // TODO: fix any
+  words: any[];
+  userId: number;
   edit?: boolean;
   id?: number;
   name?: string;
-  selectedWords?: string[];
+  selectedWords?: number[];
 }) {
   const [state, action, pending] = useActionState(
-    addDeck.bind(null, { username, edit, id }),
+    addDeck.bind(null, { userId, edit, id }),
     undefined
   );
 
@@ -55,13 +55,13 @@ export default function AddDeck({
               <div className="flex gap-1">
                 {words.length > 0 ? (
                   words.map((word) => (
-                    <div key={word.value} className="relative">
+                    <div key={word.id} className="relative">
                       <input
                         type="checkbox"
-                        name={word.value}
+                        name={word.id}
                         id={word.value}
                         defaultChecked={
-                          selectedWords && selectedWords.includes(word.value)
+                          selectedWords && selectedWords.includes(word.id)
                         }
                         className="opacity-0 absolute inset-0 peer"
                       />

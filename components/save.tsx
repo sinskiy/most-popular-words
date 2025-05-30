@@ -1,13 +1,13 @@
 "use client";
 
-import { Word } from "../types/word";
 import { User } from "../types/user";
 import { useActionState } from "react";
 import { save } from "../actions/save";
 
 interface SaveProps {
   user: false | User;
-  word: Word;
+  // TODO: fix any
+  word: any;
   cn?: string;
 }
 

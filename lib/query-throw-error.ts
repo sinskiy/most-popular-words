@@ -1,16 +1,12 @@
-import { QueryArrayConfig, QueryResultRow } from "pg";
-import db from "../configs/pg";
-
-export default async function queryThrowError<T extends QueryResultRow = any>(
-  message: string,
-  queryTextOrConfig: QueryArrayConfig | string,
-  values?: any[]
-) {
+export async function queryWithCustomError<
+  Query extends () => Promise<any>,
+  Return
+>(errorMessage: string, query: Query): Promise<Return> {
   try {
-    return await db.query<T>(queryTextOrConfig, values);
-  } catch (e) {
-    console.log(e);
-    const error = new Error(message);
+    return await query();
+  } catch (err) {
+    console.log(err);
+    const error = new Error(errorMessage);
     throw error;
   }
 }

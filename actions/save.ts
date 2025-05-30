@@ -1,27 +1,24 @@
 "use server";
 
 import { revalidateTag } from "next/cache";
-import db from "../configs/pg";
 import { User } from "../types/user";
-import { Word } from "../types/word";
+import prisma from "../configs/prisma";
 
-export async function save(
-  { user, word }: { user: User | false; word: Word },
-  state: unknown,
-  formData: FormData
-) {
+// TODO: fix any
+export async function save({ user, word }: { user: User | false; word: any }) {
   if (user === false) return;
 
   if (word.saved) {
-    await db.query("DELETE FROM saved WHERE word = $1 AND username = $2", [
-      word.value,
-      user.username,
-    ]);
+    await prisma.savedWord.deleteMany({
+      where: { wordId: word.id, userId: user.id },
+    });
   } else {
-    await db.query("INSERT INTO saved (word, username) VALUES ($1, $2)", [
-      word.value,
-      user.username,
-    ]);
+    await prisma.savedWord.create({
+      data: {
+        word: { connect: { id: word.id } },
+        user: { connect: { id: user.id } },
+      },
+    });
   }
   revalidateTag("words");
 }

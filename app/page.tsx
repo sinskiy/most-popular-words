@@ -1,159 +1,52 @@
 import Pagination from "../ui/pagination";
 import Words from "../components/words";
-import { DEFAULT_LANGUAGE, DEFAULT_SORT, Word } from "../types/word";
+import { DEFAULT_LANGUAGE, DEFAULT_SORT } from "../types/word";
 import { PageProps } from "../types/page";
-import queryThrowError from "../lib/query-throw-error";
-import cacheDb from "../lib/cache-db";
 import { getUser } from "../actions/auth";
-import { ITEMS_PER_PAGE } from "../lib/db";
 import Sort from "../components/sort";
 import Filters from "../components/filters";
 import { Suspense } from "react";
 import Tip from "../components/tip";
-
-const getWords = cacheDb(
-  async ({
-    offset,
-    search,
-    source,
-    type,
-    language,
-    easy,
-    good,
-    hard,
-    again,
-    sort,
-    saved,
-    username,
-  }: {
-    offset: number;
-    search: string;
-    source: string;
-    type: string;
-    language: string;
-    easy: string | false;
-    good: string | false;
-    hard: string | false;
-    again: string | false;
-    sort: string;
-    saved: boolean;
-    username?: string;
-  }) =>
-    await queryThrowError<Word>(
-      "Couldn't get words",
-      `SELECT value, occurrences, percentage, saved, translations, definitions, examples
-           FROM user_words_with_percentage($1)
-        WHERE value LIKE $2 AND source LIKE $3 AND type LIKE $4 AND language = $5 AND (knowledge = $9 OR knowledge = $10 OR knowledge = $11 OR knowledge = $12 OR COALESCE(knowledge, '') LIKE $13) AND (saved = $6 OR saved = true)
-           ORDER BY ` +
-        getWordsSort(sort) +
-        " LIMIT $7 OFFSET $8",
-      [
-        username ?? null,
-        `%${search}%`,
-        `%${source}%`,
-        type,
-        language,
-        saved,
-        ITEMS_PER_PAGE,
-        offset,
-        easy,
-        good,
-        hard,
-        again,
-        !easy && !good && !hard && !again ? "%%" : false,
-      ]
-    ),
-  ["words"]
-);
-
-const getWordsCount = cacheDb(
-  async ({
-    search,
-    source,
-    type,
-    language,
-    saved,
-    easy,
-    good,
-    hard,
-    again,
-    username,
-  }: {
-    search: string;
-    source: string;
-    type: string;
-    language: string;
-    saved: boolean;
-    easy: string | false;
-    good: string | false;
-    hard: string | false;
-    again: string | false;
-    username?: string;
-  }) =>
-    await queryThrowError<{ count: number }>(
-      "Couldn't get words count",
-      "SELECT COUNT(*) FROM user_words_with_percentage($1) WHERE value LIKE $2 AND source LIKE $3 AND type LIKE $4 AND language = $5 AND (saved = $6 OR saved = true) AND (knowledge = $7 OR knowledge = $8 OR knowledge = $9 OR knowledge = $10 OR COALESCE(knowledge, '') LIKE $11)",
-      [
-        username,
-        `%${search}%`,
-        `%${source}%`,
-        type,
-        language,
-        saved,
-        easy,
-        good,
-        hard,
-        again,
-        !easy && !good && !hard && !again ? "%%" : false,
-      ]
-    )
-);
+import {
+  getGroupedWords,
+  getWordsCount,
+  getWordsKnowledge,
+  getWordsSort,
+} from "../actions/words";
+import { getOffset, getTotalPages } from "../lib/pages";
+import { Languages } from "../configs/kysely";
 
 export default async function Home({ searchParams }: PageProps) {
   const params = await searchParams;
+  // TODO: restructure in a separate module getting knowledge, offset, etc.
   const page = Number(params.page || 1);
   const search = (params.search ?? "") as string;
   const sort = (params.sort ?? DEFAULT_SORT) as string;
-  const language = (params.language ?? DEFAULT_LANGUAGE) as string;
-  const source = (params.source ?? "") as string;
-  const type = (params.type ?? "%%") as string;
-  const easy = params.easy ? "easy" : false;
-  const good = params.good ? "good" : false;
-  const hard = params.hard ? "hard" : false;
-  const again = params.again ? "again" : false;
-  const saved = Boolean(params.saved ?? false);
+  const language = (params.language ?? DEFAULT_LANGUAGE) as Languages;
+  const easy = Boolean(params.easy);
+  const good = Boolean(params.good);
+  const hard = Boolean(params.hard);
+  const again = Boolean(params.again);
+  const saved = Boolean(params.saved);
 
-  const offset = (page - 1) * ITEMS_PER_PAGE;
+  const offset = getOffset(page);
 
   const user = await getUser();
 
-  const words = await getWords({
+  const getWordsBaseParams = {
+    search,
+    language,
+    saved,
+    knowledge: getWordsKnowledge({ easy, good, hard, again }),
+    userId: user ? user.id : null,
+  };
+  const words = await getGroupedWords({
+    ...getWordsBaseParams,
     offset,
-    search,
-    source,
-    type,
-    language,
-    easy,
-    good,
-    hard,
-    again,
-    sort,
-    saved,
-    username: typeof user !== "boolean" ? user.username : undefined,
+    sort: getWordsSort(sort),
   });
-  const wordsCount = await getWordsCount({
-    search,
-    source,
-    type,
-    language,
-    saved,
-    easy,
-    good,
-    hard,
-    again,
-    username: typeof user !== "boolean" ? user.username : undefined,
-  });
-  const totalPages = Math.ceil(wordsCount.rows[0].count / ITEMS_PER_PAGE);
+  // TODO: fix any
+  const wordsCount: any = await getWordsCount(getWordsBaseParams);
 
   return (
     <main className="flex flex-col gap-6">
@@ -164,21 +57,8 @@ export default async function Home({ searchParams }: PageProps) {
         </Suspense>
       </header>
       {user === false && <Tip>sign up or log in to save and learn words</Tip>}
-      <Words list={words.rows} user={user} />
-      <Pagination curr={page} end={totalPages} />
+      <Words list={words} user={user} />
+      <Pagination curr={page} end={getTotalPages(wordsCount[0]?.count ?? 0)} />
     </main>
   );
-}
-
-function getWordsSort(sort: string) {
-  switch (sort) {
-    case "descending":
-      return "occurrences DESC";
-    case "ascending":
-      return "occurrences";
-    case "alphabetical":
-      return "value";
-    default:
-      return "occurrences DESC";
-  }
 }
