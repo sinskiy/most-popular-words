@@ -11,18 +11,19 @@ import Dropdown from "../ui/dropdown";
 import Form from "../ui/form";
 import InputField from "../ui/input-field";
 import { UseActionState } from "../types/action";
+import type { Word } from "../actions/words";
 
 interface WordDetailsProps {
   user: User | false;
-  // TODO: fix word type being unknown
-  word: any;
+  word: Word;
 }
 
 export default function WordDetails({ user, word }: WordDetailsProps) {
   const actionState = useActionState(
     setWordDetails.bind(null, {
       userId: user && user.id,
-      wordId: word.id,
+      // TODO: check why it says it can be null
+      wordId: word.id!,
     }),
     undefined
   );
@@ -52,13 +53,13 @@ export function WordDetailsWithKnowledge({
   word,
 }: {
   user: User;
-  // TODO: fix word type being unnown
-  word: any;
+  word: Word;
 }) {
   const actionState = useActionState(
     setWordDetailsWithKnowledge.bind(null, {
       userId: user && user.id,
-      wordId: word.id,
+      // TODO: check why it says it can be null
+      wordId: word.id!,
     }),
     undefined
   );
@@ -93,8 +94,7 @@ export function WordDetailsBase({
   actionState,
   children,
 }: {
-  // TODO: fix
-  word: any;
+  word: Word;
   actionState: UseActionState;
 } & PropsWithChildren) {
   const [state, action, pending] = actionState;

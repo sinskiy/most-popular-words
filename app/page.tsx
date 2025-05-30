@@ -45,8 +45,7 @@ export default async function Home({ searchParams }: PageProps) {
     offset,
     sort: getWordsSort(sort),
   });
-  // TODO: fix any
-  const wordsCount: any = await getWordsCount(getWordsBaseParams);
+  const wordsCount = await getWordsCount(getWordsBaseParams);
 
   return (
     <main className="flex flex-col gap-6">

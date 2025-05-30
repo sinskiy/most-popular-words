@@ -2,6 +2,7 @@
 import { useActionState, useEffect, useRef } from "react";
 import InputField from "../ui/input-field";
 import { addDeck } from "../actions/deck";
+import { Words } from "../actions/words";
 
 export default function AddDeck({
   words,
@@ -11,8 +12,7 @@ export default function AddDeck({
   name,
   selectedWords,
 }: {
-  // TODO: fix any
-  words: any[];
+  words: Words;
   userId: number;
   edit?: boolean;
   id?: number;
@@ -58,15 +58,18 @@ export default function AddDeck({
                     <div key={word.id} className="relative">
                       <input
                         type="checkbox"
-                        name={word.id}
-                        id={word.value}
+                        name={String(word.id)}
+                        // TODO: check why it says it can be null
+                        id={word.value!}
                         defaultChecked={
-                          selectedWords && selectedWords.includes(word.id)
+                          // TODO: same
+                          selectedWords && selectedWords.includes(word.id!)
                         }
                         className="opacity-0 absolute inset-0 peer"
                       />
                       <label
-                        htmlFor={word.value}
+                        // TODO: same
+                        htmlFor={word.value!}
                         className="neutral peer-checked:primary block px-2"
                       >
                         {word.value}

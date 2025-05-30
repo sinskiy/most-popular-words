@@ -1,9 +1,9 @@
+import type { Words } from "../actions/words";
 import { User } from "../types/user";
 import Word from "./word";
 
 interface WordsProps {
-  // TODO: fix list type being unknown
-  list: any[];
+  list: Words;
   user: false | User;
 }
 

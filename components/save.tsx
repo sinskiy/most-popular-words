@@ -3,11 +3,12 @@
 import { User } from "../types/user";
 import { useActionState } from "react";
 import { save } from "../actions/save";
+import { Word } from "../actions/words";
 
 interface SaveProps {
+  // TODO: update user type
   user: false | User;
-  // TODO: fix any
-  word: any;
+  word: Word;
   cn?: string;
 }
 

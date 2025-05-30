@@ -26,8 +26,7 @@ export default async function Saved({ searchParams }: PageProps) {
     sort: ["occurred_word.occurrences"],
     offset,
   });
-  // TODO: fix any
-  const wordsCount: any = await getWordsCount(getWordsBaseParams);
+  const wordsCount = await getWordsCount(getWordsBaseParams);
 
   return (
     <main className="flex flex-col gap-2">

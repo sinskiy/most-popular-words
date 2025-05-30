@@ -3,12 +3,12 @@ import { cn } from "../lib/helpers";
 import { User } from "../types/user";
 import Save from "./save";
 import WordDetails from "./word-details";
+import type { Word } from "../actions/words";
 
 interface WordProps {
   user: false | User;
   rank: number;
-  // TODO: fix any word type being unknown
-  word: any;
+  word: Word;
 }
 
 export default async function Word({ user, rank, word }: WordProps) {

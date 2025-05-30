@@ -5,7 +5,7 @@ import { getDecks, getDeckWords } from "../../actions/get-decks";
 import Link from "next/link";
 import DeleteDeck from "../../components/delete-deck";
 import { Suspense } from "react";
-import { getGroupedWords } from "../../actions/words";
+import { getGroupedWords, Words } from "../../actions/words";
 
 export default async function Page() {
   const user = await getUser();
@@ -14,8 +14,7 @@ export default async function Page() {
   }
 
   // TODO: make search non-required
-  // TODO: fix any
-  const savedWords: any[] = await getGroupedWords({
+  const savedWords = await getGroupedWords({
     offset: 0,
     knowledge: false,
     language: "NO_LANGUAGE_FILTER",
@@ -24,7 +23,7 @@ export default async function Page() {
     sort: ["occurred_word.occurrences"],
     userId: user.id,
   });
-  const decks: any[] = await getDecks(user.id);
+  const decks = await getDecks(user.id);
 
   return (
     <>
@@ -71,11 +70,11 @@ async function WithSelectedWords({
   name,
 }: {
   userId: number;
-  words: any[];
+  words: Words;
   id: number;
   name: string;
 }) {
-  const selectedWords: any[] = await getDeckWords(id);
+  const selectedWords = await getDeckWords(id);
   return (
     <AddDeck
       userId={userId}

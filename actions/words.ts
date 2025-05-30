@@ -11,6 +11,9 @@ interface GetGroupedWords extends GetGroupedWordsBase {
   offset: number;
 }
 
+export type Words = Awaited<ReturnType<typeof getGroupedWords>>;
+export type Word = Words[number];
+
 export const getGroupedWords = cacheDb(
   async ({
     userId,

@@ -3,19 +3,22 @@
 import { revalidateTag } from "next/cache";
 import { User } from "../types/user";
 import prisma from "../configs/prisma";
+import { Word } from "./words";
 
-// TODO: fix any
-export async function save({ user, word }: { user: User | false; word: any }) {
+// TODO: update user type
+export async function save({ user, word }: { user: User | false; word: Word }) {
   if (user === false) return;
 
   if (word.saved) {
     await prisma.savedWord.deleteMany({
-      where: { wordId: word.id, userId: user.id },
+      // TODO: check why it says it can be null
+      where: { wordId: word.id!, userId: user.id },
     });
   } else {
     await prisma.savedWord.create({
       data: {
-        word: { connect: { id: word.id } },
+        // TODO: same
+        word: { connect: { id: word.id! } },
         user: { connect: { id: user.id } },
       },
     });

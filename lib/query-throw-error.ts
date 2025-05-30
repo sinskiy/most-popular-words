@@ -1,7 +1,7 @@
-export async function queryWithCustomError<
-  Query extends () => Promise<any>,
-  Return
->(errorMessage: string, query: Query): Promise<Return> {
+export async function queryWithCustomError<Query extends () => Promise<any>>(
+  errorMessage: string,
+  query: Query
+): Promise<ReturnType<Query>> {
   try {
     return await query();
   } catch (err) {
