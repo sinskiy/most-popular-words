@@ -1,0 +1,34 @@
+"use client";
+
+import Form from "@/ui/form";
+import InputField from "@/ui/input-field";
+import { signUpAction } from "@/users/actions";
+import { useActionState } from "react";
+
+export default function SignUp() {
+  const [state, action, pending] = useActionState(signUpAction, undefined);
+
+  return (
+    <Form
+      action={action}
+      pending={pending}
+      heading="sign up"
+      // TODO: fix types
+      message={state?.message}
+    >
+      <InputField
+        id="username"
+        type="text"
+        autoComplete="username"
+        error={state?.errors?.username}
+      />
+      <InputField
+        id="password"
+        type="password"
+        autoComplete="new-password"
+        error={state?.errors?.password}
+        errorAsArray
+      />
+    </Form>
+  );
+}
