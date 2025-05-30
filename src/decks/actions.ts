@@ -2,9 +2,8 @@
 
 import { revalidateTag } from "next/cache";
 import { AddDeckSchema } from "./schema";
-import { createDeck, createDeckWords, deleteDeck, updateDeck } from "./queries";
+import { createDeck, deleteDeck, updateDeck } from "./queries";
 
-// TODO: separate into two actions (edit and add)
 export async function addDeckAction(
   { userId }: { userId: number },
   state: unknown,
@@ -23,11 +22,10 @@ export async function addDeckAction(
 
   const { name, ...wordIds } = validatedFields.data;
 
+  const { wordIdsToAdd } = buildDeckWordsPartOfDeck([], wordIds);
+
   try {
-    const deck = await createDeck(name, userId);
-    const deckWords = buildDeckWords(deck.id, wordIds);
-    // TODO: make it a single query
-    await createDeckWords(deckWords);
+    await createDeck(name, userId, wordIdsToAdd);
 
     revalidateTag("decks");
 
@@ -39,7 +37,11 @@ export async function addDeckAction(
 }
 
 export async function editDeckAction(
-  { userId, id }: { userId: number; id: number },
+  {
+    userId,
+    id,
+    prevWordIds,
+  }: { userId: number; id: number; prevWordIds: number[] },
   state: unknown,
   formData: FormData
 ) {
@@ -56,11 +58,13 @@ export async function editDeckAction(
 
   const { name, ...wordIds } = validatedFields.data;
 
+  const { wordIdsToAdd, wordIdsToRemove } = buildDeckWordsPartOfDeck(
+    prevWordIds,
+    wordIds
+  );
+
   try {
-    await updateDeck(id, userId, name);
-    const deckWords = buildDeckWords(id, wordIds);
-    // TODO: make it a single query
-    await createDeckWords(deckWords);
+    await updateDeck(id, userId, name, wordIdsToAdd, wordIdsToRemove);
 
     revalidateTag("decks");
 
@@ -71,14 +75,20 @@ export async function editDeckAction(
   }
 }
 
-function buildDeckWords(deckId: number, wordIds: { [id: string]: unknown }) {
-  const deckWords = [];
-  for (const id in wordIds) {
-    if (!id.includes("$ACTION")) {
-      deckWords.push({ deckId, wordId: Number(id) });
-    }
-  }
-  return deckWords;
+const makePartOfDeck = (id: number) => ({ wordId: id });
+
+function buildDeckWordsPartOfDeck(
+  prevWordIds: number[],
+  wordIds: { [id: string]: unknown }
+) {
+  const wordIdsArray = Object.keys(wordIds).map((id) => Number(id));
+  const wordIdsToAdd = wordIdsArray
+    .filter((id) => id && !prevWordIds.includes(id))
+    .map(makePartOfDeck);
+  const wordIdsToRemove = prevWordIds
+    .filter((id) => !wordIdsArray.includes(id))
+    .map(makePartOfDeck);
+  return { wordIdsToAdd, wordIdsToRemove };
 }
 
 // TODO: check why this is action instead of just a function

@@ -15,10 +15,11 @@ export default function AddDeck({
   | {
       words: QueriedWord[];
       userId: number;
+
       edit?: false;
       id?: undefined;
-      name?: string;
-      selectedWords?: number[];
+      name?: undefined;
+      selectedWords?: undefined;
     }
   | {
       words: QueriedWord[];
@@ -26,11 +27,11 @@ export default function AddDeck({
       edit: true;
       id: number;
       name?: string;
-      selectedWords?: number[];
+      selectedWords: number[];
     }) {
   const [state, action, pending] = useActionState(
     edit && id
-      ? editDeckAction.bind(null, { userId, id })
+      ? editDeckAction.bind(null, { userId, id, prevWordIds: selectedWords })
       : addDeckAction.bind(null, { userId }),
     undefined
   );

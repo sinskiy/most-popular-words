@@ -12,18 +12,40 @@ export async function queryDecksByUserId(userId: number) {
   );
 }
 
-export async function createDeck(name: string, userId: number) {
+type DeckWordPartOfDeck = { wordId: number };
+
+export async function createDeck(
+  name: string,
+  userId: number,
+  insertDeckWords: DeckWordPartOfDeck[]
+) {
   return await prisma.deck.create({
-    data: { name, userId },
+    data: {
+      name,
+      userId,
+      deckWords: { createMany: { data: insertDeckWords } },
+    },
     select: { id: true },
   });
 }
 
 // TODO: use userId in addition to id everywhere
-export async function updateDeck(id: number, userId: number, newName: string) {
+export async function updateDeck(
+  id: number,
+  userId: number,
+  newName: string,
+  insertDeckWords: DeckWordPartOfDeck[],
+  deleteDeckWords: DeckWordPartOfDeck[]
+) {
   await prisma.deck.update({
     where: { id, userId },
-    data: { name: newName },
+    data: {
+      name: newName,
+      deckWords: {
+        deleteMany: deleteDeckWords,
+        createMany: { data: insertDeckWords },
+      },
+    },
   });
 }
 
@@ -38,10 +60,4 @@ export async function queryDeckWordsByDeckId(deckId: number) {
       select: { word: { select: { id: true } } },
     })
   );
-}
-
-export async function createDeckWords(
-  deckWords: { deckId: number; wordId: number }[]
-) {
-  await prisma.deckWord.createMany({ data: deckWords });
 }
