@@ -14,7 +14,7 @@ export const metadata: Metadata = {
     title: TITLE,
     description: DESCRIPTION,
     siteName: TITLE,
-    url: "https://words.sinskiy.website",
+    url: "https://words.sinskiy.site",
   },
   twitter: {
     card: "summary_large_image",
