@@ -154,6 +154,48 @@ function wordsQueryBase({
   return query;
 }
 
+export async function queryWord(value: string, userId: number | null) {
+  return await kysely
+    .selectFrom("word")
+    .innerJoin("occurred_word", "occurred_word.word_id", "word.id")
+    .fullJoin("user_word", (join) =>
+      join
+        .onRef("user_word.word_id", "=", "word.id")
+        .on("user_word.user_id", "=", userId)
+    )
+    .select(({ eb, and, fn }) => [
+      "word.id",
+      "value",
+      fn.sum<number>("occurrences").as("occurrences"),
+      sql<number>`sum(occurrences)::float * 100 / (SELECT sum(occurrences) FROM occurred_word)`.as(
+        "percentage"
+      ),
+      fn.coalesce("translations", sql.lit("{}")).as("translations"),
+      fn.coalesce("definitions", sql.lit("{}")).as("definitions"),
+      fn.coalesce("examples", sql.lit("{}")).as("examples"),
+      "knowledge",
+      eb(
+        "word.id",
+        "in",
+        eb
+          .selectFrom("saved_word")
+          .where("saved_word.user_id", "=", userId)
+          .select("saved_word.word_id")
+      ).as("saved"),
+    ])
+    // TODO: SQL, wtf?
+    .groupBy([
+      "word.id",
+      "translations",
+      "definitions",
+      "examples",
+      "knowledge",
+      "occurrences",
+    ])
+    .where("value", "=", value)
+    .executeTakeFirst();
+}
+
 export async function deleteSavedWord(userId: number, wordId: number) {
   await prisma.savedWord.delete({
     where: { userId_wordId: { userId, wordId } },
@@ -187,7 +229,7 @@ export async function upsertUserWord({
   await prisma.userWord.upsert({
     // TODO: write a blog post about this
     where: { userId_wordId: { userId, wordId } },
-    update: { translations, definitions, examples },
+    update: { translations, definitions, examples, knowledge },
     create: { userId, wordId, translations, definitions, examples, knowledge },
   });
 }

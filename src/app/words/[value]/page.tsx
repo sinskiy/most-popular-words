@@ -1,24 +1,9 @@
 import { Suspense } from "react";
-import { getUser } from "../../../actions/auth";
-import cacheDb from "../../../lib/cache-db";
-import queryThrowError, { queryWithCustomError } from "../../../lib/query-throw-error";
-import { SavedWord } from "../../../types/word";
 import Save from "../../../components/save";
 import { WordDetailsWithKnowledge } from "../../../components/word-details";
-import prisma from "../../../db/prisma";
-
-const getWord = cacheDb(
-  async (value: string, username: string | false) =>
-    await queryWithCustomError("Couldn't get words", () => prisma.userWord.find)
-    await queryThrowError<SavedWord>(
-      "Couldn't get words",
-      `SELECT value, occurrences, percentage, saved, source, type, translations, definitions, examples, knowledge
-           FROM user_words_with_percentage($1)
-        WHERE value = $2`,
-      [username || null, value]
-    ),
-  ["words"]
-);
+import { getUser } from "@/users/auth";
+import { queryWord } from "@/words/queries";
+import ErrorPage from "@/components/error-page";
 
 export default async function Word({
   params,
@@ -39,12 +24,16 @@ export default async function Word({
 
 async function QueriedWordDetails({ value }: { value: string }) {
   const user = await getUser();
-  const wordQuery = await getWord(value, user && user.username);
-  const [word] = wordQuery.rows;
+  const word = await queryWord(value, user ? user.id : null);
+
+  if (!word) {
+    return <ErrorPage title={404}>word not found</ErrorPage>;
+  }
 
   return (
     <>
       <Save user={user} word={word} cn="w-fit !inline ml-4" />
+      {/* MAYBE: show list of sources and types that include this word? */}
       {/* source and type are only for partial entries */}
       {/* <p>
         type: <span className="font-semibold">{word.type}</span>, source:{" "}
@@ -54,10 +43,7 @@ async function QueriedWordDetails({ value }: { value: string }) {
         <span className="font-semibold">{word.occurrences} </span>
         occurrence
         {word.occurrences !== 1 && "s"},{" "}
-        <span className="font-semibold">
-          {(word.percentage * 100).toFixed(2)}
-        </span>
-        %
+        <span className="font-semibold">{word.percentage.toFixed(2)}</span>%
       </p>
       {user && (
         <section className="w-fit mt-6">

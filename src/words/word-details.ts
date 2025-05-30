@@ -72,7 +72,9 @@ export async function setWordDetailsWithKnowledge(
 
   const { translations, definitions, examples } = packDetials(formData);
   // TODO: check if it's lowercase or uppercase, make according adjustments
-  const knowledge = formData.get("knowledge") as Knowledge;
+  const knowledge = (
+    formData.get("knowledge") as string
+  ).toUpperCase() as Knowledge;
 
   try {
     await upsertUserWord({
