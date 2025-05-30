@@ -1,6 +1,6 @@
 # most popular words in \_\_\_\_\_\_\_
 
-View, define and learn words at [words.sinskiy.website](https://words.sinskiy.website/)
+View, define and learn words at [words.sinskiy.site](https://words.sinskiy.site/)
 
 ## Counting words
 
@@ -19,7 +19,7 @@ TypeScript, Next.js, TailwindCSS, Zod, JWT and more
 
 ## Deployed on
 
-[words.sinskiy.website](https://words.sinskiy.website/) - [Vercel](https://vercel.com)
+[words.sinskiy.site](https://words.sinskiy.site/) - [Vercel](https://vercel.com)
 
 Database - [Neon](https://neon.tech)
 
