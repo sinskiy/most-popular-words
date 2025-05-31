@@ -70,9 +70,9 @@ export async function setWordDetailsWithKnowledge(
   if (!userId) return getActionError("Must be logged in");
 
   const { translations, definitions, examples } = packDetials(formData);
-  const knowledge = (
-    formData.get("knowledge") as string
-  ).toUpperCase() as Knowledge;
+  const knowledge = (formData.get("knowledge") as string)
+    // TODO: make same in Kysely and Prisma
+    .toUpperCase() as Knowledge;
 
   try {
     await upsertUserWord({

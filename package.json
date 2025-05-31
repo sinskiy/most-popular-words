@@ -7,7 +7,9 @@
     "dev": "next dev --turbopack",
     "build": "next build",
     "start": "next start",
-    "lint": "next lint"
+    "lint": "next lint",
+    "db:generate": "prisma generate --schema=./src/db/schema.prisma",
+    "db:migrate": "prisma migrate dev --schema=./src/db/schema.prisma --name"
   },
   "dependencies": {
     "@next/env": "^15.1.0",
