@@ -34,6 +34,7 @@ export async function logIn(username: string, password: string) {
       throw new Error("Passwords do not match");
     }
 
+    // TODO: typesafe env
     const token = jwt.sign({ username }, process.env.JWT_SECRET!, {
       expiresIn: "30d",
     });

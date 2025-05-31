@@ -1,11 +1,12 @@
 generator client {
   provider = "prisma-client-js"
-  output   = "~/generated/prisma"
+  output   = "../../generated/prisma"
 }
 
 generator kysely {
   provider = "prisma-kysely"
-  output   = "~/generated/kysely"
+  // TODO: prisma doesn't support tsconfig path aliases + prisma doesn't do search for schema
+  output   = "../../generated/kysely"
 }
 
 datasource db {
