@@ -1,5 +1,5 @@
-import kysely from "@/db/kysely";
-import { Languages, SourceType } from "~/generated/kysely/types";
+import kysely from "../src/db/kysely.ts";
+import { Languages, SourceType } from "../generated/kysely/types.ts";
 
 interface InsertWords {
   source: string;

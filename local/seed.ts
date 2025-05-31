@@ -1,10 +1,10 @@
 import { readdir } from "node:fs/promises";
-import { countWordsInDirectory } from "./count-words";
-import insertWords from "./insert-words";
+import { countWordsInDirectory } from "./count-words.ts";
+import insertWords from "./insert-words.ts";
 
 addWordsFromAllDirectories();
 
-async function addWordsFromAllDirectories(path = "./words/input") {
+async function addWordsFromAllDirectories(path = "./local/input") {
   const files = await readdir(path);
 
   for (const filePath of files) {
@@ -17,7 +17,7 @@ async function addWordsFromAllDirectories(path = "./words/input") {
         language: "english",
         source: filePath,
         sourceType: "docs",
-        doDeleteAllWords: true,
+        doDeleteAllWords: false,
       });
     }
   }
