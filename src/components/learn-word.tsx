@@ -41,18 +41,24 @@ function getFilteredWords(words: QueriedWord[], prevWord: string | false) {
 export default function LearnWord({ user, words, reverse }: LearnWordProps) {
   const [localWords, setLocalWords] = useState(words);
 
-  useEffect(() => {
-    setLocalWords(words);
-  }, [words]);
-
   const [prevWord, setPrevWord] = useState<string | false>(false);
 
   const filteredWords = getFilteredWords(localWords, prevWord);
 
   const [randomWordIndex, setRandomWordIndex] = useState<number | false>(false);
-  useEffect(() => {
+  const updateRandomWordIndex = (filteredWords: QueriedWord[]) =>
     setRandomWordIndex(getRandomIndex(filteredWords.length));
+
+  useEffect(() => {
+    updateRandomWordIndex(filteredWords);
   }, []);
+
+  useEffect(() => {
+    setPrevWord(false);
+    setLocalWords(words);
+    // handle inside to prevent rendering with wrong (unavailable) index
+    updateRandomWordIndex(getFilteredWords(words, false));
+  }, [words]);
 
   function handleNext(knowledgeValue: (typeof knowledgeArray)[number]) {
     if (randomWordIndex === false) return;
@@ -81,6 +87,11 @@ export default function LearnWord({ user, words, reverse }: LearnWordProps) {
   const [state, action, pending] = useActionState(
     updateKnowledge.bind(null, { words: localWords, user: user }),
     undefined
+  );
+
+  console.log(
+    randomWordIndex,
+    randomWordIndex !== false && filteredWords[randomWordIndex]
   );
 
   return (
@@ -158,7 +169,6 @@ function LearnWordLoaded({
   const [state, action, pending] = useActionState(
     setWordDetailsWithSeparator.bind(null, {
       userId: user?.id,
-      // TODO: check why null
       wordId: word.id!,
     }),
     undefined
