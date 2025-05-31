@@ -2,7 +2,7 @@
 
 import { usePathname, useRouter, useSearchParams } from "next/navigation";
 
-export default function RemoveChosenDeck() {
+export default function LearnAllWords() {
   const searchParams = useSearchParams();
   const pathname = usePathname();
   const router = useRouter();
@@ -14,7 +14,7 @@ export default function RemoveChosenDeck() {
   }
   return (
     <button className="w-fit" onClick={removeDeck}>
-      remove chosen deck
+      learn all words
     </button>
   );
 }

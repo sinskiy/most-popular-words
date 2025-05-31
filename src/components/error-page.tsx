@@ -2,12 +2,14 @@ import Link from "next/link";
 import Back from "@/components/back";
 import { PropsWithChildren } from "react";
 
-interface ErrorPageProps extends PropsWithChildren {
+interface CustomErrorPageProps extends PropsWithChildren {
   title: string | number;
 }
 
-// TODO: change naming to avoid confusion with another ErrorPageProps interface
-export default function ErrorPage({ title, children }: ErrorPageProps) {
+export default function CustomErrorPage({
+  title,
+  children,
+}: CustomErrorPageProps) {
   return (
     <main className="absolute inset-0 text-center flex flex-col justify-center items-center -z-10">
       <h1 className="font-bold text-6xl">{title}</h1>

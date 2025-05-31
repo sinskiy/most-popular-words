@@ -1,4 +1,4 @@
-import ErrorPage from "@/components/error-page";
+import CustomErrorPage from "@/components/error-page";
 import AddDeck from "@/components/add-deck";
 import Link from "next/link";
 import DeleteDeck from "@/components/delete-deck";
@@ -10,7 +10,7 @@ import { queryDecksByUserId, queryDeckWordsByDeckId } from "@/decks/queries";
 export default async function Page() {
   const user = await getUser();
   if (!user) {
-    return <ErrorPage title={401}>Unauthorized</ErrorPage>;
+    return <CustomErrorPage title={401}>Unauthorized</CustomErrorPage>;
   }
 
   // TODO: make search non-required

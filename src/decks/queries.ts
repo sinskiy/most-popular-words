@@ -29,7 +29,6 @@ export async function createDeck(
   });
 }
 
-// TODO: use userId in addition to id everywhere
 export async function updateDeck(
   id: number,
   userId: number,

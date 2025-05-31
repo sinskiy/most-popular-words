@@ -22,7 +22,6 @@ export default function WordDetails({ user, word }: WordDetailsProps) {
   const actionState = useActionState(
     setWordDetails.bind(null, {
       userId: user ? user.id : false,
-      // TODO: check why it says it can be null
       wordId: word.id!,
     }),
     undefined
@@ -58,7 +57,6 @@ export function WordDetailsWithKnowledge({
   const actionState = useActionState(
     setWordDetailsWithKnowledge.bind(null, {
       userId: user.id,
-      // TODO: check why it says it can be null
       wordId: word.id!,
     }),
     undefined

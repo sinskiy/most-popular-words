@@ -27,16 +27,6 @@ export function setParams(
   return params;
 }
 
-export function getErrorMessage(e: unknown) {
-  const errorMessage =
-    e instanceof Error
-      ? e.message
-      : typeof e === "string"
-      ? e
-      : "Unexpected error";
-  return { message: errorMessage };
-}
-
 export function getRandomIndex(length: number) {
   return Math.floor(Math.random() * length);
 }
@@ -51,4 +41,8 @@ export function cn(classes: unknown | unknown[]) {
   }
 
   return classes.filter((cssClass) => typeof cssClass === "string").join(" ");
+}
+
+export function moreThanDayBefore(date: Date) {
+  return Date.now() - date.getTime() > 1000 * 60 * 60 * 24;
 }

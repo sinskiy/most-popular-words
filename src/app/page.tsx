@@ -13,17 +13,8 @@ import { queryWords, queryWordsCount } from "@/words/queries";
 
 export default async function Home({ searchParams }: PageProps) {
   const params = await searchParams;
-  // TODO: restructure in a separate module getting knowledge, offset, etc.
-  const page = Number(params.page || 1);
-  const search = (params.search ?? "") as string;
-  const sort = (params.sort ?? DEFAULT_SORT) as string;
-  const language = (params.language ?? DEFAULT_LANGUAGE) as Languages;
-  const easy = Boolean(params.easy);
-  const good = Boolean(params.good);
-  const hard = Boolean(params.hard);
-  const again = Boolean(params.again);
-  const saved = Boolean(params.saved);
-
+  const { page, search, language, saved, sort, knowledge } =
+    getHomeParams(params);
   const offset = getOffset(page);
 
   const user = await getUser();
@@ -32,7 +23,7 @@ export default async function Home({ searchParams }: PageProps) {
     search,
     language,
     saved,
-    knowledge: { easy, good, hard, again },
+    knowledge,
     userId: user ? user.id : null,
   };
   const words = await queryWords({
@@ -55,4 +46,21 @@ export default async function Home({ searchParams }: PageProps) {
       <Pagination curr={page} end={getTotalPages(wordsCount[0]?.count ?? 0)} />
     </main>
   );
+}
+
+function getHomeParams(params: {
+  [key: string]: string | string[] | undefined;
+}) {
+  const easy = Boolean(params.easy);
+  const good = Boolean(params.good);
+  const hard = Boolean(params.hard);
+  const again = Boolean(params.again);
+  return {
+    page: Number(params.page || 1),
+    knowledge: { easy, good, hard, again },
+    saved: Boolean(params.saved),
+    search: (params.search ?? "") as string,
+    sort: (params.sort ?? DEFAULT_SORT) as string,
+    language: (params.language ?? DEFAULT_LANGUAGE) as Languages,
+  };
 }

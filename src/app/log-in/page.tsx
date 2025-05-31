@@ -13,7 +13,6 @@ export default function LogIn() {
       action={action}
       pending={pending}
       heading="log in"
-      // TODO: fix types
       message={state?.message}
     >
       <InputField

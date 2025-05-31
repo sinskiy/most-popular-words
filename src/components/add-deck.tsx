@@ -73,16 +73,13 @@ export default function AddDeck({
                       <input
                         type="checkbox"
                         name={String(word.id)}
-                        // TODO: check why it says it can be null
                         id={word.value!}
                         defaultChecked={
-                          // TODO: same
                           selectedWords && selectedWords.includes(word.id!)
                         }
                         className="opacity-0 absolute inset-0 peer"
                       />
                       <label
-                        // TODO: same
                         htmlFor={word.value!}
                         className="neutral peer-checked:primary block px-2"
                       >

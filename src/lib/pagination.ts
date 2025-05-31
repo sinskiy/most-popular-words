@@ -1,6 +1,6 @@
 export const ITEMS_PER_PAGE = 10;
 
-// TODO: improve
+// TODO: improve and write a blog post about this
 export function getPages(curr: number, end: number) {
   const pages: number[] = [1];
 

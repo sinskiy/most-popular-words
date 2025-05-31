@@ -18,7 +18,6 @@ export function buildQuerySort(sort: string) {
 export function buildQueryKnowledge(
   knowledge: Record<Knowledge, boolean> | "NO_KNOWLEDGE_FILTER"
 ): Knowledge[] | "NO_KNOWLEDGE_FILTER" {
-  // TODO: think about a better way
   if (
     knowledge === "NO_KNOWLEDGE_FILTER" ||
     Object.values(knowledge).every((bool) => bool === false)
@@ -28,7 +27,7 @@ export function buildQueryKnowledge(
     return (
       Object.entries(knowledge)
         .filter(([, bool]) => bool === true)
-        // TODO: typescript, wtf?
+        // ? typescript, wtf?
         .map(([value]) => value as Knowledge)
     );
   }

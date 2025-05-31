@@ -1,16 +1,16 @@
 "use server";
 
+import { getActionError, getSuccess } from "@/lib/actions";
 import { upsertUserWord } from "@/words/queries";
 import { revalidateTag } from "next/cache";
 import { Knowledge } from "~/generated/prisma";
 
 export async function setWordDetails(
-  // TODO: standardize usage of userId + word as string and user + word as object
   { userId, wordId }: { userId: number | false; wordId: number },
   state: unknown,
   formData: FormData
 ) {
-  if (!userId) return { message: "Must be logged in" };
+  if (!userId) return getActionError("Must be logged in");
 
   const { translations, definitions, examples } = packDetials(formData);
 
@@ -23,10 +23,9 @@ export async function setWordDetails(
       examples,
     });
     revalidateTag("words");
-    return { success: true };
   } catch (e) {
     console.log(e);
-    return { message: "Couldn't update" };
+    return getActionError("Couldn't update");
   }
 }
 
@@ -35,7 +34,7 @@ export async function setWordDetailsWithSeparator(
   state: unknown,
   formData: FormData
 ) {
-  if (!userId) return { message: "Must be logged in" };
+  if (!userId) return getActionError("Must be logged in");
 
   const translations = (formData.get("translations") as string).split(", ");
   const definitions = (formData.get("definitions") as string).split(", ");
@@ -50,10 +49,10 @@ export async function setWordDetailsWithSeparator(
       examples,
     });
     revalidateTag("words");
-    return { success: true };
+    return getSuccess();
   } catch (e) {
     console.log(e);
-    return { message: "Couldn't update" };
+    return getActionError("Couldn't update");
   }
 }
 
@@ -68,10 +67,9 @@ export async function setWordDetailsWithKnowledge(
   state: unknown,
   formData: FormData
 ) {
-  if (!userId) return { message: "Must be logged in" };
+  if (!userId) return getActionError("Must be logged in");
 
   const { translations, definitions, examples } = packDetials(formData);
-  // TODO: check if it's lowercase or uppercase, make according adjustments
   const knowledge = (
     formData.get("knowledge") as string
   ).toUpperCase() as Knowledge;
@@ -86,10 +84,9 @@ export async function setWordDetailsWithKnowledge(
       knowledge,
     });
     revalidateTag("words");
-    return { success: true };
   } catch (e) {
     console.log(e);
-    return { message: "Couldn't update" };
+    return getActionError("Couldn't update");
   }
 }
 

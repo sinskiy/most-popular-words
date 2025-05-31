@@ -7,8 +7,9 @@ import prisma from "@/db/prisma";
 import { increaseUserStreak, QueriedUser } from "@/users/queries";
 import { QueriedWord } from "@/words/queries";
 import { buildUserWords } from "./query-helpers";
+import { moreThanDayBefore } from "@/lib/utils";
+import { getActionError } from "@/lib/actions";
 
-// TODO: change saved to isWordSaved
 export async function saveWordAction({
   userId,
   wordId,
@@ -18,10 +19,15 @@ export async function saveWordAction({
   wordId: number;
   saved: boolean;
 }) {
-  if (saved) {
-    await deleteSavedWord(userId, wordId);
-  } else {
-    await createSavedWord(userId, wordId);
+  try {
+    if (saved) {
+      await deleteSavedWord(userId, wordId);
+    } else {
+      await createSavedWord(userId, wordId);
+    }
+  } catch (e) {
+    console.log(e);
+    return getActionError("Couldn't save");
   }
   revalidateTag("words");
 }
@@ -33,13 +39,10 @@ export async function updateKnowledge({
   user: QueriedUser;
   words: (QueriedWord & { changed?: true })[];
 }) {
-  if (!user) return { message: "Must be logged in" };
+  if (!user) return getActionError("Must be logged in");
 
   try {
-    if (
-      Date.now() - new Date(user.lastStreak).getTime() >
-      1000 * 60 * 60 * 24
-    ) {
+    if (moreThanDayBefore(new Date(user.lastStreak))) {
       await increaseUserStreak(user.id, user.streak);
       revalidateTag("user");
     }
@@ -56,7 +59,7 @@ export async function updateKnowledge({
     );
   } catch (e) {
     console.log(e);
-    return { message: "Couldn't update" };
+    return getActionError("Couldn't update");
   }
   redirect("/");
 }

@@ -13,7 +13,6 @@ export default function SignUp() {
       action={action}
       pending={pending}
       heading="sign up"
-      // TODO: fix types
       message={state?.message}
     >
       <InputField

@@ -3,7 +3,7 @@ import Save from "../../../components/save";
 import { WordDetailsWithKnowledge } from "../../../components/word-details";
 import { getUser } from "@/users/auth";
 import { queryWord } from "@/words/queries";
-import ErrorPage from "@/components/error-page";
+import CustomErrorPage from "@/components/error-page";
 
 export default async function Word({
   params,
@@ -27,7 +27,7 @@ async function QueriedWordDetails({ value }: { value: string }) {
   const word = await queryWord(value, user ? user.id : null);
 
   if (!word) {
-    return <ErrorPage title={404}>word not found</ErrorPage>;
+    return <CustomErrorPage title={404}>word not found</CustomErrorPage>;
   }
 
   return (

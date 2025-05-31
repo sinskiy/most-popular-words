@@ -4,16 +4,16 @@ import { usePathname, useRouter, useSearchParams } from "next/navigation";
 
 export default function AllLanguages() {
   const params = useSearchParams();
-  const skipLanguage = params.get("skip-language") ?? "false";
+  const allLanguages = params.get("all-languages") ?? "false";
   const pathname = usePathname();
   const { replace } = useRouter();
 
-  function setSkipLanguage() {
+  function setAllLanguages() {
     const searchParams = new URLSearchParams(params);
-    if (skipLanguage === "true") {
-      searchParams.delete("skip-language");
+    if (allLanguages === "true") {
+      searchParams.delete("all-languages");
     } else {
-      searchParams.set("skip-language", "true");
+      searchParams.set("all-languages", "true");
     }
     replace(`${pathname}?${searchParams}`);
   }
@@ -24,8 +24,8 @@ export default function AllLanguages() {
         type="checkbox"
         name="all-languages"
         id="all-languages"
-        defaultChecked={skipLanguage === "true"}
-        onChange={setSkipLanguage}
+        defaultChecked={allLanguages === "true"}
+        onChange={setAllLanguages}
       />
       <label htmlFor="all-languages">all languages</label>
     </div>

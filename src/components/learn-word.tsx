@@ -89,11 +89,6 @@ export default function LearnWord({ user, words, reverse }: LearnWordProps) {
     undefined
   );
 
-  console.log(
-    randomWordIndex,
-    randomWordIndex !== false && filteredWords[randomWordIndex]
-  );
-
   return (
     <main className="flex flex-col gap-4">
       {filteredWords.length > 0 ? (

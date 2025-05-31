@@ -1,5 +1,6 @@
 "use client";
 
+import { moreThanDayBefore } from "@/lib/utils";
 import { getLastStreakWithSideEffects } from "@/users/actions";
 import { useActionState, useEffect, useRef } from "react";
 
@@ -10,8 +11,7 @@ export default function Streak() {
     const lastCheckedString = localStorage.getItem("last-checked-streak");
     if (
       !lastCheckedString ||
-      Date.now() - new Date(Number(lastCheckedString)).getTime() >
-        1000 * 60 * 60 * 24
+      moreThanDayBefore(new Date(Number(lastCheckedString)))
     ) {
       formRef.current?.requestSubmit();
     }
@@ -22,7 +22,7 @@ export default function Streak() {
     undefined
   );
 
-  if (typeof state === "string") {
+  if (state instanceof Date) {
     localStorage.setItem("last-checked-streak", String(Date.now()));
   }
 

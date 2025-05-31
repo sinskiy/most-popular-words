@@ -1,3 +1,5 @@
+import { SafeParseError } from "zod";
+
 export type FormState<T> =
   | {
       errors?: T;
@@ -8,9 +10,9 @@ export type FormState<T> =
 type ActionState =
   | {
       message: string;
-      success: undefined;
+      errors: undefined;
+      success: boolean;
     }
-  | { success: boolean; message: undefined }
   | undefined;
 
 export type UseActionState = [
@@ -18,3 +20,19 @@ export type UseActionState = [
   (payload: FormData) => void,
   boolean
 ];
+
+export function getValidationErrors<T>(validation: SafeParseError<T>) {
+  return {
+    errors: validation.error.flatten().fieldErrors,
+    message: undefined,
+    success: false,
+  };
+}
+
+export function getActionError(message: string) {
+  return { message, errors: undefined, success: false };
+}
+
+export function getSuccess() {
+  return { message: undefined, errors: undefined, success: true };
+}

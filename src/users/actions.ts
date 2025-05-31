@@ -5,6 +5,8 @@ import { revalidateTag } from "next/cache";
 import { redirect } from "next/navigation";
 import { UserFormSchema } from "./schema";
 import { resetUserStreak } from "./queries";
+import { getActionError, getValidationErrors } from "@/lib/actions";
+import { moreThanDayBefore } from "@/lib/utils";
 
 export async function signUpAction(state: unknown, formData: FormData) {
   const validatedFields = UserFormSchema.safeParse(
@@ -12,14 +14,16 @@ export async function signUpAction(state: unknown, formData: FormData) {
   );
 
   if (!validatedFields.success) {
-    return { errors: validatedFields.error.flatten().fieldErrors };
+    return getValidationErrors(validatedFields);
   }
 
   const { username, password } = validatedFields.data;
 
-  const error = await signUp(username, password);
-  if (error) {
-    return error;
+  try {
+    await signUp(username, password);
+  } catch (e) {
+    console.log(e);
+    return getActionError(e as string);
   }
 
   redirect("/log-in");
@@ -31,14 +35,15 @@ export async function logInAction(state: unknown, formData: FormData) {
   );
 
   if (!validatedFields.success) {
-    return { errors: validatedFields.error.flatten().fieldErrors };
+    return getValidationErrors(validatedFields);
   }
 
   const { username, password } = validatedFields.data;
 
-  const error = await logIn(username, password);
-  if (error) {
-    return error;
+  try {
+    await logIn(username, password);
+  } catch (e) {
+    return getActionError(e as string);
   }
 
   revalidateTag("user");
@@ -49,19 +54,17 @@ export async function logInAction(state: unknown, formData: FormData) {
 export async function getLastStreakWithSideEffects() {
   const user = await getUser();
   if (!user) {
-    return { message: "Not logged in" };
+    return getActionError("Not logged in");
   }
 
   try {
-    if (
-      Date.now() - new Date(user.lastStreak).getTime() >
-      1000 * 60 * 60 * 24 * 2
-    ) {
+    if (moreThanDayBefore(new Date(user.lastStreak))) {
       await resetUserStreak(user.id);
     }
     revalidateTag("user");
-  } catch {
-    return { message: "Couldn't update streak" };
+  } catch (e) {
+    console.log(e);
+    return getActionError("Couldn't update streak");
   }
 
   return user.lastStreak;

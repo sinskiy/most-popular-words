@@ -3,21 +3,19 @@
 import { revalidateTag } from "next/cache";
 import { AddDeckSchema } from "./schema";
 import { createDeck, deleteDeck, updateDeck } from "./queries";
+import { getActionError, getValidationErrors } from "@/lib/actions";
 
 export async function addDeckAction(
   { userId }: { userId: number },
   state: unknown,
   formData: FormData
 ) {
-  if (!userId) return { message: "Must be logged in" };
+  if (!userId) return getActionError("Must be logged in");
 
   const validatedFields = AddDeckSchema.safeParse(Object.fromEntries(formData));
 
   if (!validatedFields.success) {
-    return {
-      // TODO: create util
-      errors: validatedFields.error.flatten().fieldErrors,
-    };
+    return getValidationErrors(validatedFields);
   }
 
   const { name, ...wordIds } = validatedFields.data;
@@ -28,11 +26,9 @@ export async function addDeckAction(
     await createDeck(name, userId, wordIdsToAdd);
 
     revalidateTag("decks");
-
-    return { success: true };
   } catch (e) {
     console.log(e);
-    return { message: "Couldn't add deck" };
+    return getActionError("Couldn't add deck");
   }
 }
 
@@ -45,15 +41,12 @@ export async function editDeckAction(
   state: unknown,
   formData: FormData
 ) {
-  if (!userId) return { message: "Must be logged in" };
+  if (!userId) return getActionError("Must be logged in");
 
   const validatedFields = AddDeckSchema.safeParse(Object.fromEntries(formData));
 
   if (!validatedFields.success) {
-    return {
-      // TODO: create util
-      errors: validatedFields.error.flatten().fieldErrors,
-    };
+    return getValidationErrors(validatedFields);
   }
 
   const { name, ...wordIds } = validatedFields.data;
@@ -65,14 +58,11 @@ export async function editDeckAction(
 
   try {
     await updateDeck(id, userId, name, wordIdsToAdd, wordIdsToRemove);
-
-    revalidateTag("decks");
-
-    return { success: true };
   } catch (e) {
     console.log(e);
-    return { message: "Couldn't edit deck" };
+    return getActionError("Couldn't edit deck");
   }
+  revalidateTag("decks");
 }
 
 const makePartOfDeck = (id: number) => ({ wordId: id });
@@ -91,7 +81,6 @@ function buildDeckWordsPartOfDeck(
   return { wordIdsToAdd, wordIdsToRemove };
 }
 
-// TODO: check why this is action instead of just a function
 export async function deleteDeckAction({
   userId,
   id,
@@ -99,18 +88,13 @@ export async function deleteDeckAction({
   userId: number;
   id: number;
 }) {
-  if (!userId) return { message: "Must be logged in" };
+  if (!userId) return getActionError("Must be logged in");
 
   try {
     await deleteDeck(id, userId);
-
-    revalidateTag("decks");
-
-    // TODO: be consistent in returning { success: true } (remove it everywhere or add it everywhere)
-    return { success: true };
   } catch (e) {
-    // TODO: make other error handling similar
     console.log(e);
-    return { message: "Couldn't delete" };
+    return getActionError("Couldn't delete deck");
   }
+  revalidateTag("decks");
 }

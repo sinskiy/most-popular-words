@@ -6,19 +6,19 @@ import { redirect } from "next/navigation";
 import jwt, { JwtPayload } from "jsonwebtoken";
 import bcrypt from "bcryptjs";
 import { createUser, queryUser, queryUserForAuth } from "./queries";
-import { getErrorMessage } from "@/lib/utils";
 
 export async function signUp(username: string, password: string) {
   try {
     const userWithUsername = await queryUserForAuth(username);
     if (userWithUsername != null) {
-      return { message: "User with this username already exists" };
+      throw new Error("User with this username already exists");
     }
 
     const hashedPassword = await bcrypt.hash(password, 10);
     await createUser(username, hashedPassword);
   } catch (e) {
-    return getErrorMessage(e);
+    console.log(e);
+    throw new Error("Couldn't sign up");
   }
 }
 
@@ -26,12 +26,12 @@ export async function logIn(username: string, password: string) {
   try {
     const user = await queryUserForAuth(username);
     if (!user) {
-      return { message: "User with this username doesn't exist" };
+      throw new Error("User with this username doesn't exist");
     }
 
     const passwordMatch = await bcrypt.compare(password, user.password);
     if (!passwordMatch) {
-      return { message: "Passwords do not match" };
+      throw new Error("Passwords do not match");
     }
 
     const token = jwt.sign({ username }, process.env.JWT_SECRET!, {
@@ -44,7 +44,8 @@ export async function logIn(username: string, password: string) {
       path: "/",
     });
   } catch (e) {
-    return getErrorMessage(e);
+    console.log(e);
+    throw new Error("Couldn't log in");
   }
 
   revalidateTag("user");
@@ -81,6 +82,7 @@ export async function logOut() {
       expires: new Date(0),
     });
   } catch (e) {
-    return getErrorMessage(e);
+    console.log(e);
+    throw new Error("Couldn't log out");
   }
 }
