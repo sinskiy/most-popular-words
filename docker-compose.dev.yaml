@@ -1,0 +1,33 @@
+services:
+  app:
+    image: words-app
+    build:
+      context: .
+      dockerfile: dev.Dockerfile
+    ports:
+      - 3000:3000
+    volumes:
+      - ./:/usr/src/app
+    depends_on:
+      - pg
+    networks:
+      - next-postgres
+  pg:
+    image: postgres
+    restart: always
+    ports:
+      - 5432:5432
+    environment:
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: postgres
+      POSTGRES_DB: words
+    volumes:
+      - pgdata:/var/lib/postgresql/data
+    networks:
+      - next-postgres
+
+networks:
+  next-postgres:
+
+volumes:
+  pgdata:
